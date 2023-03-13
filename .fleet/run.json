@@ -1,0 +1,9 @@
+{
+    "configurations": [
+        {
+            "name": "Run",
+            "type": "command",
+            "program": "lua",
+        }
+    ]
+}
