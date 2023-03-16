@@ -1,0 +1,71 @@
+1678991659096	geckodriver	INFO	Listening on 127.0.0.1:42641
+1678991659600	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "52509" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofilekO3oNq"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+1678991660069	Marionette	INFO	Marionette enabled
+1678991660071	Marionette	INFO	Listening on port 36403
+Read port: 36403
+WebDriver BiDi listening on ws://127.0.0.1:52509
+1678991660189	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.error: ({})
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofilekO3oNq/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:52509/devtools/browser/677c50f6-9b05-47f6-9dc5-9392556f56e3
+1678991664664	Marionette	INFO	Stopped listening on port 36403
+console.error: (new AbortError("IndexedDB: main/url-classifier-skip-urls list() IndexedDB:  execute() A request was aborted, for example through a call to IDBTransaction.abort.", "resource://services-settings/IDBHelpers.jsm", 18))
+1678991694388	geckodriver	INFO	Listening on 127.0.0.1:33097
+1678991694893	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "51489" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofile1nFlPt"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+1678991695361	Marionette	INFO	Marionette enabled
+1678991695364	Marionette	INFO	Listening on port 44477
+Read port: 44477
+WebDriver BiDi listening on ws://127.0.0.1:51489
+1678991695513	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.error: ({})
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofile1nFlPt/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:51489/devtools/browser/f4f2c0b0-9425-4e05-bea4-51f93d03145b
+1678991696937	geckodriver	INFO	Listening on 127.0.0.1:50731
+1678991697443	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "52689" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofileDAimXd"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+1678991697947	Marionette	INFO	Marionette enabled
+1678991697949	Marionette	INFO	Listening on port 37501
+WebDriver BiDi listening on ws://127.0.0.1:52689
+Read port: 37501
+1678991698123	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1678991698372	Marionette	INFO	Stopped listening on port 44477
+console.error: (new AbortError("IndexedDB: main/url-classifier-skip-urls list() IndexedDB:  execute() A request was aborted, for example through a call to IDBTransaction.abort.", "resource://services-settings/IDBHelpers.jsm", 18))
+console.error: ({})
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileDAimXd/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:52689/devtools/browser/8e2621a3-36b5-4180-be06-d0cbfa648362
+1678991699953	Marionette	INFO	Stopped listening on port 37501
+1678991718689	geckodriver	INFO	Listening on 127.0.0.1:34585
+1678991719193	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "33935" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofileBvv3tM"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+1678991719707	Marionette	INFO	Marionette enabled
+1678991719710	Marionette	INFO	Listening on port 39013
+Read port: 39013
+WebDriver BiDi listening on ws://127.0.0.1:33935
+1678991719826	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.error: ({})
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileBvv3tM/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:33935/devtools/browser/5ab5bfc4-dd67-4661-9f38-cfa2867e7859
+1678991724150	Marionette	INFO	Stopped listening on port 39013
+console.error: (new AbortError("IndexedDB: main/url-classifier-skip-urls list() IndexedDB:  execute() A request was aborted, for example through a call to IDBTransaction.abort.", "resource://services-settings/IDBHelpers.jsm", 18))
