@@ -1,0 +1,2 @@
+local GoldWindow = {} 
+return GoldWindow

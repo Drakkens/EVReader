@@ -1,0 +1,2 @@
+local WalletItem = {} 
+return WalletItem

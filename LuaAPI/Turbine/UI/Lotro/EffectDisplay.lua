@@ -1,0 +1,2 @@
+local EffectDisplay = {} 
+return EffectDisplay

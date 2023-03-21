@@ -1,0 +1,2 @@
+local DragDropInfo = {} 
+return DragDropInfo

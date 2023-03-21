@@ -1,0 +1,2 @@
+local PluginManager = {} 
+return PluginManager

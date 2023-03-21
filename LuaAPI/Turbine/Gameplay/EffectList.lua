@@ -1,0 +1,2 @@
+local EffectList = {} 
+return EffectList

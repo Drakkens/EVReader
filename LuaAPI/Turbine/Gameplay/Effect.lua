@@ -1,0 +1,2 @@
+local Effect = {} 
+return Effect

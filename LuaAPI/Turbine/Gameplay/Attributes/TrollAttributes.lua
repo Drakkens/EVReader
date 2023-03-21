@@ -1,0 +1,2 @@
+local TrollAttributes = {} 
+return TrollAttributes

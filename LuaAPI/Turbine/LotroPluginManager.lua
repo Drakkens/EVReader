@@ -1,0 +1,2 @@
+local LotroPluginManager = {}
+return LotroPluginManager

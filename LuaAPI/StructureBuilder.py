@@ -17,7 +17,7 @@ def read_structure(api_directory):
             current_dir = ""
 
             # Avoid Files
-            for i in range(len(split_file) - 1):
+            for i in range(len(split_file) - 2):
                 new_dir = current_dir + split_file[i]
 
                 # If Folder not Created

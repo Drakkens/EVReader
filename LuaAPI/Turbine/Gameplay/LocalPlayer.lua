@@ -1,0 +1,2 @@
+local LocalPlayer = {} 
+return LocalPlayer

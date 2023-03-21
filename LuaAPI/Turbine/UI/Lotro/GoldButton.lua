@@ -1,0 +1,2 @@
+local GoldButton = {} 
+return GoldButton

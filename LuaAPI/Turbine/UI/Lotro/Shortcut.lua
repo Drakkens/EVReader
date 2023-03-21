@@ -1,0 +1,2 @@
+local Shortcut = {} 
+return Shortcut

@@ -1,0 +1,2 @@
+local CheckBox = {} 
+return CheckBox

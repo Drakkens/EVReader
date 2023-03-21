@@ -1,0 +1,2 @@
+local LotroUI = {} 
+return LotroUI

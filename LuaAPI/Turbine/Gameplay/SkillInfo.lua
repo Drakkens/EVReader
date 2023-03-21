@@ -1,0 +1,2 @@
+local SkillInfo = {} 
+return SkillInfo

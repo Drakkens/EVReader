@@ -1,0 +1,2 @@
+local PartyMember = {} 
+return PartyMember

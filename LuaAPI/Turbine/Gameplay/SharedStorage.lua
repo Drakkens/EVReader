@@ -1,0 +1,2 @@
+local SharedStorage = {} 
+return SharedStorage

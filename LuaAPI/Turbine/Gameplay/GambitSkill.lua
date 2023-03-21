@@ -1,0 +1,2 @@
+local GambitSkill = {} 
+return GambitSkill

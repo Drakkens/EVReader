@@ -1,0 +1,2 @@
+local MonsterPlayerAttributes = {} 
+return MonsterPlayerAttributes

@@ -1,0 +1,2 @@
+local Quickslot = {} 
+return Quickslot

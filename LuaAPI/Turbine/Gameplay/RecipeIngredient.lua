@@ -1,0 +1,2 @@
+local RecipeIngredient = {} 
+return RecipeIngredient

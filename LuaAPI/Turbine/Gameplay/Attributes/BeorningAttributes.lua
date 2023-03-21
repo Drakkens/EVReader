@@ -1,0 +1,2 @@
+local BeorningAttributes = {} 
+return BeorningAttributes

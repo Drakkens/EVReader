@@ -1,0 +1,2 @@
+local EntityControl = {} 
+return EntityControl

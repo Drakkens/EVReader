@@ -1,0 +1,2 @@
+local CombatMount = {} 
+return CombatMount
