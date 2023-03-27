@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+    database:
+        build:
+            context: ./database
+        image: postgres:latest
+        environment:
+            POSTGRES_PASSWORD: Test
+            POSTGRES_USER: Test
+            POSTGRES_DB: Test
+        volumes:
+            - "./database/scripts:/docker-entrypoint-initdb.d"
+        ports:
+            - "5432:5432"
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - "8080:8080"
+
