@@ -85,8 +85,17 @@ def find_rectangles(area, analysis):
 def get_tooltip_image(screenshot, tooltip, cover=False):
     cropped = (screenshot[tooltip.y0:tooltip.y1, tooltip.x0:tooltip.x1])
 
+    equipped = False
+    # ToDo: Change (255, 255, 255) for 'Equipped' Color
+    if (255, 255, 255) in cropped[tooltip.y0:20, tooltip.x0:tooltip.x1]:
+        equipped = True
+
     if cover:
-        cropped[15:55, 5:42] = 0
+        if equipped:
+            cropped[15:55, 5:42] = 0
+        else:
+            cropped[15:55, 5:42] = 0
+
         cover_essence_slots(cropped)
 
     resized = cv.resize(cropped, (tooltip.width * 2, tooltip.height * 2), cv.INTER_AREA)
@@ -114,6 +123,8 @@ def stat_tooltip(processed_text, image):
 
 
 def cover_essence_slots(image):
+
+    # ToDo: Find Threshold to include Embers/Ashes Frame.
     essence_slot_lower_color = (10, 64, 64)
     essence_slot_higher_color = (30, 255, 255)
 
