@@ -1,6 +1,7 @@
 import sys
 from time import sleep
 from PIL import Image
+from enum import Enum
 
 import cv2 as cv
 import pyautogui
@@ -11,28 +12,29 @@ import csv
 import os
 
 from Rectangle import Rectangle
+from Item import Item
+
+
+class Mode(Enum):
+    ITEM = 1
+
 
 TARGET_WINDOW_TITLE = 'The Lord of the Rings Online™'
+TESSERACT_CONFIG = "--oem 3, --psm 11"
 pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 file = open("Tooltip_Gathering.csv", 'w', newline='')
 writer = csv.writer(file)
 
 
-def get_gray_pixels(screenshot):
-    hsv = cv.cvtColor(screenshot, cv.COLOR_RGB2HSV)
+def convert_to_binary(screenshot, dilate=False):
+    gray_image = cv.cvtColor(screenshot, cv.COLOR_RGB2GRAY)
+    ret, mask = cv.threshold(gray_image, 35, 255, cv.THRESH_BINARY)
 
-    # lower_gray = np.array([0, 0, 2])
-    # upper_gray = np.array([0, 0, 128])
-    lower_gray = np.array([0, 0, 0])
-    upper_gray = np.array([0, 0, 0])
+    if dilate:
+        mask = cv.dilate(mask, (1, 1))
 
-    # mask = cv.inRange(screenshot, (0, 50, 50), (10, 255, 255)) Grabs essence slots?
-    mask = cv.inRange(hsv, lower_gray, upper_gray)
-    # mask = cv.erode(mask, (1, 1))
-
-
-    return mask
+    return cv.bitwise_not(mask)
 
 
 def get_screen_contents():
@@ -54,7 +56,7 @@ def get_screen_contents():
         return screenshot, analysis
 
 
-def find_tooltips(area, analysis):
+def find_rectangles(area, analysis):
     count = 0
 
     total_labels = analysis[0]
@@ -80,11 +82,12 @@ def find_tooltips(area, analysis):
     return rectangles
 
 
-def get_tooltip_image(screenshot, tooltip, gray_mask):
+def get_tooltip_image(screenshot, tooltip, cover=False):
     cropped = (screenshot[tooltip.y0:tooltip.y1, tooltip.x0:tooltip.x1])
 
-    # cropped_gray_mask = gray_mask[tooltip.y0:tooltip.y1, tooltip.x0:tooltip.x1]
-    # cropped[cropped_gray_mask > 0] = (0, 255, 0)
+    if cover:
+        cropped[15:55, 5:42] = 0
+        cover_essence_slots(cropped)
 
     resized = cv.resize(cropped, (tooltip.width * 2, tooltip.height * 2), cv.INTER_AREA)
     return Image.fromarray(resized)
@@ -110,27 +113,48 @@ def stat_tooltip(processed_text, image):
     image.save(f"./Tooltips/{class_name}/{stat_name}.jpg")
 
 
-def main():
+def cover_essence_slots(image):
+    essence_slot_lower_color = (10, 64, 64)
+    essence_slot_higher_color = (30, 255, 255)
+
+    hsv_image = cv.cvtColor(image, cv.COLOR_RGB2HSV)
+    essence_slots_borders = cv.inRange(hsv_image, essence_slot_lower_color, essence_slot_higher_color)
+
+    analysis = cv.connectedComponentsWithStats(essence_slots_borders, 4, cv.CV_32S)
+
+    essence_slots_positions = find_rectangles(100, analysis)
+
+    for essence_slot in essence_slots_positions:
+        image[essence_slot.y0:essence_slot.y1, essence_slot.x0:essence_slot.x1] = 0
+
+
+def main(mode):
     try:
         while True:
             sleep(0.05)
             # color_image = cv.rectangle(color_image, start, end, (0, 0, 255), -1)
-            sleep(1)
             result = get_screen_contents()
             if result is not None:
                 screenshot, analysis = result
-                gray_mask = get_gray_pixels(screenshot)
-                tooltips = find_tooltips(650, analysis)
+                # binary_screenshot = convert_to_binary(screenshot)
+                # binary_screenshot_dilated = convert_to_binary(screenshot, True)
+                tooltips = find_rectangles(650, analysis)
 
                 for tooltip in tooltips:
-                    image = get_tooltip_image(screenshot, tooltip, gray_mask)
-                    image.save(f"./image.jpg")
-                    tooltip_text = pytesseract.image_to_string(image, config="--oem 3, --psm 11, tessedit_write_images=true")
+                    human_image = get_tooltip_image(screenshot, tooltip)
+                    ocr_image = get_tooltip_image(screenshot, tooltip, True)
 
-                    processed_text = list(filter(None, list(tooltip_text.replace(":", "").split("\n"))))
-                    print(processed_text)
-                    # stat_tooltip(processed_text, image)
-                    writer.writerow(processed_text)
+                    tooltip_text_normal = pytesseract.image_to_string(ocr_image,
+                                                                      config=TESSERACT_CONFIG)
+                    processed_text_normal = list(filter(None, list(tooltip_text_normal.replace(":", "").replace("-", "").split("\n"))))
+
+                    if mode == Mode.ITEM:
+                        item = Item(processed_text_normal)
+                        human_image.save(f"./Tooltips/Items/{item.name}.jpg")
+                        ocr_image.save(f"./Tooltips/Items/{item.name}_ocr.jpg")
+
+                        print(item)
+                    writer.writerow(processed_text_normal)
 
             # Debug
             # cv.imshow("Test", color_image)
@@ -142,4 +166,4 @@ def main():
         sys.exit(130)
 
 
-main()
+main(Mode.ITEM)
