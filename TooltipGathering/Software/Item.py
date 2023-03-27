@@ -78,7 +78,7 @@ def find_item_stats(text, item_level_index):
             if STAT in text[index]:
                 stats[STAT] = text[index].replace(STAT, '').replace('+', '').strip()
 
-        if "ESSENCE" in text[index]:
+        if "ESSENCE" in text[index] or "EMPTY SLOT" in text[index]:
             break
 
     return stats
