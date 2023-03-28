@@ -31,29 +31,30 @@ INSERT INTO Main_Stats(stat_name) VALUES('Fate');
 
 CREATE TABLE IF NOT EXISTS Raw_Stats(
     ID serial PRIMARY KEY,
-    stat_name VARCHAR(20)
+    stat_name VARCHAR(30)
 );
 
 INSERT INTO Raw_Stats(stat_name) VALUES('Critical Rating');
-INSERT INTO Raw_Stats(stat_name) VALUES('Finesse');
-INSERT INTO Raw_Stats(stat_name) VALUES('Physical Mastery');
-INSERT INTO Raw_Stats(stat_name) VALUES('Tactical Mastery');
+INSERT INTO Raw_Stats(stat_name) VALUES('Finesse Rating');
+INSERT INTO Raw_Stats(stat_name) VALUES('Physical Mastery Rating');
+INSERT INTO Raw_Stats(stat_name) VALUES('Tactical Mastery Rating');
 INSERT INTO Raw_Stats(stat_name) VALUES('Physical Mitigation');
-INSERT INTO Raw_Stats(stat_name) VALUES('Tactical Mitigaton');
+INSERT INTO Raw_Stats(stat_name) VALUES('Tactical Mitigation');
 INSERT INTO Raw_Stats(stat_name) VALUES('Critical Defence');
-INSERT INTO Raw_Stats(stat_name) VALUES('Block');
-INSERT INTO Raw_Stats(stat_name) VALUES('Parry');
-INSERT INTO Raw_Stats(stat_name) VALUES('Evade');
-INSERT INTO Raw_Stats(stat_name) VALUES('Outgoing Healing');
-INSERT INTO Raw_Stats(stat_name) VALUES('Incoming Healing');
-INSERT INTO Raw_Stats(stat_name) VALUES('Resistance');
+INSERT INTO Raw_Stats(stat_name) VALUES('Block Rating');
+INSERT INTO Raw_Stats(stat_name) VALUES('Parry Rating');
+INSERT INTO Raw_Stats(stat_name) VALUES('Evade Rating');
+INSERT INTO Raw_Stats(stat_name) VALUES('Outgoing Healing Rating');
+INSERT INTO Raw_Stats(stat_name) VALUES('Incoming Healing Rating');
+INSERT INTO Raw_Stats(stat_name) VALUES('Resistance Rating');
 
 
 CREATE TABLE Main_Stats_to_Raw_Stats(
     main_stat_id smallint REFERENCES Main_Stats(id),
     raw_stat_id smallint REFERENCES Raw_Stats(id),
     class_id smallint REFERENCES Classes(id),
-    amount real
+    amount real,
+    PRIMARY KEY (main_stat_id, raw_stat_id, class_id)
 
 );
 

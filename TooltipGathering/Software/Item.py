@@ -23,7 +23,7 @@ STAT_NAMES = [
     'Physical Mastery Rating',
     'Tactical Mastery Rating',
     'Physical Mitigation',
-    'Tactical Mitigaton',
+    'Tactical Mitigation',
     'Critical Defence',
     'Block Rating',
     'Parry Rating',
@@ -35,6 +35,7 @@ STAT_NAMES = [
 
 
 def find_name(text):
+    name = []
     index_found = False
     index = 0
     while not index_found and index < len(text):
@@ -44,6 +45,9 @@ def find_name(text):
             name = text[:first_index_after_name]
             index_found = True
         index += 1
+
+    if "Equipped" in text[0]:
+        name = name[1:]
 
     return ' '.join(name) or None
 
@@ -76,7 +80,7 @@ def find_item_stats(text, item_level_index):
     for index in range(item_level_index, len(text)):
         for STAT in STAT_NAMES:
             if STAT in text[index]:
-                stats[STAT] = text[index].replace(STAT, '').replace('+', '').strip()
+                stats[STAT] = text[index].replace(STAT, '').replace('+', '').replace(',', '').strip()
 
         if "ESSENCE" in text[index] or "EMPTY SLOT" in text[index]:
             break
