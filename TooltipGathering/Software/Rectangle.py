@@ -9,6 +9,14 @@ class Rectangle:
         self.height = self.y1 - self.y0
         self.width = self.x1 - self.x0
 
+    def __str__(self):
+        return f"""x0: {self.x0}
+x1: {self.x1}
+y0: {self.y0}
+y1: {self.y1}
+height: {self.height}
+width: {self.width}"""
+
     @classmethod
     def from_points(cls, start: list, end: list) -> object:
         return cls(start, end)
