@@ -88,13 +88,43 @@ def find_rectangles(area, analysis):
     return rectangles
 
 
-def get_tooltip_image(screenshot, tooltip, cover=False):
+def convert_stat_tooltip_to_ocr(image):
+    hsv_image = cv.cvtColor(image, cv.COLOR_RGB2HSV)
+    # white_pixels = cv.inRange(hsv_image, (0, 0, 62), (180, 0, 255))
+    # red_pixels = cv.inRange(hsv_image, (0, 128, 64), (15, 255, 200))
+
+    # image[white_pixels == 255] = (0, 197, 41)
+    # image[red_pixels == 255] = (0, 197, 41)
+
+    # Name font issues with higher threshold
+    white_pixels_name = cv.inRange(hsv_image[0:hsv_image.shape[0] // 2, 0:hsv_image.shape[1]], (0, 0, 55),
+                                   (180, 0, 255))
+    # Contribution issues with lower threshold
+    white_pixels_contribution = cv.inRange(hsv_image[hsv_image.shape[0] // 2:hsv_image.shape[0], 0:hsv_image.shape[1]],
+                                           (0, 0, 55), (180, 0, 255))
+
+    # Combine upper half and lower half to full tooltip.
+    white_pixels = np.array([white_pixels_name, white_pixels_contribution])
+    reshaped_white_pixels = white_pixels.reshape(white_pixels.shape[0] * white_pixels.shape[1], white_pixels.shape[2])
+
+    image[reshaped_white_pixels == 255] = (0, 255, 0)
+
+
+def get_tooltip_image(screenshot, tooltip, ocr=False, mode=None):
     cropped = (screenshot[tooltip.y0:tooltip.y1, tooltip.x0:tooltip.x1])
 
-    if cover:
-        cover_unwanted_icons(cropped)
+    if ocr:
+        if mode == Mode.ITEM:
+            cover_unwanted_icons(cropped)
+        if mode == Mode.STATS:
+            convert_stat_tooltip_to_ocr(cropped)
 
     resized = cv.resize(cropped, (tooltip.width * 2, tooltip.height * 2), cv.INTER_AREA)
+    # cropped = cv.filter2D(cropped, -1, np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]]))
+
+    cv.imshow("cropped", resized)
+    cv.waitKey(0)
+
     return Image.fromarray(resized)
 
 
@@ -144,12 +174,12 @@ def main(mode):
                 tooltips = find_rectangles(650, analysis)
 
                 for tooltip in tooltips:
-                    human_image = get_tooltip_image(screenshot, tooltip)
-                    ocr_image = get_tooltip_image(screenshot, tooltip, True)
-
                     if mode == Mode.ITEM:
+                        human_image = get_tooltip_image(screenshot, tooltip, False, mode)
+                        ocr_image = get_tooltip_image(screenshot, tooltip, True, mode)
+
                         tooltip_text_normal = pytesseract.image_to_string(ocr_image,
-                                                                          config=TESSERACT_CONFIG)
+                                                                          config=TESSERACT_CONFIG, lang='eng')
                         processed_text_normal = list(
                             filter(None, list(tooltip_text_normal.replace(":", "").replace("-", "").split("\n"))))
 
@@ -159,16 +189,21 @@ def main(mode):
 
                         print(item)
                     elif mode == Mode.STATS:
-                        tooltip_text_normal = pytesseract.image_to_string(human_image,
-                                                                          config=TESSERACT_CONFIG)
+                        human_image = get_tooltip_image(screenshot, tooltip, False, mode)
+                        ocr_image = get_tooltip_image(screenshot, tooltip, True, mode)
+
+                        tooltip_text_normal = pytesseract.image_to_string(ocr_image,
+                                                                          config=TESSERACT_CONFIG, lang='eng')
                         processed_text_normal = list(
-                            filter(None, list(tooltip_text_normal.replace(":", "").replace("-", "").split("\n"))))
+                            filter(None,
+                                   list(tooltip_text_normal.upper().replace(":", "").replace("-", "").split("\n"))))
 
                         stat_tooltip: MainStatTooltip = MainStatTooltip(processed_text_normal)
                         stat_tooltip.save_image(human_image)
+                        stat_tooltip.save_image(ocr_image, True)
+                        print(stat_tooltip)
 
                         for key, value in stat_tooltip.stats.items():
-                            print(stat_tooltip.stats)
                             main_stat_id = database_mappings.get("MAIN_STATS").get(stat_tooltip.stat_name)
                             raw_stat_id = database_mappings.get("RAW_STATS").get(key)
                             class_id = database_mappings.get("CLASSES").get(stat_tooltip.class_name)
@@ -179,7 +214,6 @@ def main(mode):
                                                                                         [main_stat_id, raw_stat_id,
                                                                                          class_id, value]
                                                                                         ))
-
 
             # Debug
             # cv.imshow("Test", color_image)
