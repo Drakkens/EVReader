@@ -31,10 +31,12 @@ def convert_stat_tooltip_to_ocr(image):
 input_img = cv.imread('../Tooltips/Guardian/Fate.jpg')
 # input_img = cv.imread('../Tooltips/Beorning/Agility.jpg')
 template_img = cv.imread('./0.jpg')
+template5_img = cv.imread('./s.jpg')
 
 # Convert both images to grayscale
 input_gray = cv.cvtColor(input_img, cv.COLOR_BGR2GRAY)
 template_gray = cv.cvtColor(template_img, cv.COLOR_BGR2GRAY)
+template5_gray = cv.cvtColor(template5_img, cv.COLOR_BGR2GRAY)
 
 # Apply template matching
 result = cv.matchTemplate(input_gray, template_gray, cv.TM_CCOEFF_NORMED)
@@ -56,8 +58,6 @@ threshold = 0.9
 # Find locations with a high similarity score
 locations = np.where(result >= threshold)
 locations = list(zip(*locations[::-1]))
-
-cv.imshow('translated_image', translated_image)
 
 # Draw a rectangle around each match in the input image
 # print(len(locations))
@@ -91,6 +91,20 @@ for loc in locations:
 TESSERACT_CONFIG = "--oem 3, --psm 11, -c tessedit_debug_fonts=1"
 
 convert_stat_tooltip_to_ocr(input_img)
+
+
+mod_in_img = cv.cvtColor(input_img, cv.COLOR_BGR2GRAY)
+result5 = cv.matchTemplate(mod_in_img, template5_gray, cv.TM_CCOEFF_NORMED)
+
+locations = np.where(result5 >= 0.8)
+locations = list(zip(*locations[::-1]))
+
+# Draw a rectangle around each match in the input image
+# print(len(locations))
+for loc in locations:
+    top_left = loc
+    bottom_right = (top_left[0] + template_gray.shape[1], top_left[1] + template_gray.shape[0])
+    cv.rectangle(input_img, top_left, bottom_right, (0, 0, 255), 2)
 
 print(pytesseract.image_to_string(input_img,
                                   config=TESSERACT_CONFIG, lang='eng')
