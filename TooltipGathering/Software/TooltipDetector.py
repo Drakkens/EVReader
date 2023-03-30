@@ -122,8 +122,8 @@ def get_tooltip_image(screenshot, tooltip, ocr=False, mode=None):
     resized = cv.resize(cropped, (tooltip.width * 2, tooltip.height * 2), cv.INTER_AREA)
     # cropped = cv.filter2D(cropped, -1, np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]]))
 
-    cv.imshow("cropped", resized)
-    cv.waitKey(0)
+    # cv.imshow("cropped", resized)
+    # cv.waitKey(0)
 
     return Image.fromarray(resized)
 
