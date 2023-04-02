@@ -1,0 +1,2 @@
+local LoreMasterAttributes = {} 
+return LoreMasterAttributes

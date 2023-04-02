@@ -1,19 +1,29 @@
-CREATE TABLE IF NOT EXISTS Classes(
+CREATE TABLE Armour_Types(
     ID serial PRIMARY KEY,
-    class_name VARCHAR(15)
+    armour_type VARCHAR(15)
 );
 
-INSERT INTO Classes(class_name) VALUES('Beorning');
-INSERT INTO Classes(class_name) VALUES('Burglar');
-INSERT INTO Classes(class_name) VALUES('Brawler');
-INSERT INTO Classes(class_name) VALUES('Captain');
-INSERT INTO Classes(class_name) VALUES('Champion');
-INSERT INTO Classes(class_name) VALUES('Guardian');
-INSERT INTO Classes(class_name) VALUES('Hunter');
-INSERT INTO Classes(class_name) VALUES('Lore-Master');
-INSERT INTO Classes(class_name) VALUES('Minstrel');
-INSERT INTO Classes(class_name) VALUES('Rune-Keeper');
-INSERT INTO Classes(class_name) VALUES('Warden');
+INSERT INTO Armour_Types(armour_type) VALUES('Light');
+INSERT INTO Armour_Types(armour_type) VALUES('Medium');
+INSERT INTO Armour_Types(armour_type) VALUES('Heavy');
+
+CREATE TABLE Classes(
+    ID serial PRIMARY KEY,
+    class_name VARCHAR(15),
+    armour_type smallint REFERENCES armour_types(id)
+);
+
+INSERT INTO Classes(class_name, armour_type) VALUES('Beorning', 3);
+INSERT INTO Classes(class_name, armour_type) VALUES('Burglar', 2);
+INSERT INTO Classes(class_name, armour_type) VALUES('Brawler', 3);
+INSERT INTO Classes(class_name, armour_type) VALUES('Captain', 3);
+INSERT INTO Classes(class_name, armour_type) VALUES('Champion', 3);
+INSERT INTO Classes(class_name, armour_type) VALUES('Guardian', 3);
+INSERT INTO Classes(class_name, armour_type) VALUES('Hunter', 2);
+INSERT INTO Classes(class_name, armour_type) VALUES('Lore-Master', 1);
+INSERT INTO Classes(class_name, armour_type) VALUES('Minstrel', 1);
+INSERT INTO Classes(class_name, armour_type) VALUES('Rune-Keeper', 1);
+INSERT INTO Classes(class_name, armour_type) VALUES('Warden', 2);
 
 
 CREATE TABLE IF NOT EXISTS Main_Stats(
@@ -49,6 +59,30 @@ INSERT INTO Raw_Stats(stat_name) VALUES('Incoming Healing Rating');
 INSERT INTO Raw_Stats(stat_name) VALUES('Resistance Rating');
 
 
+CREATE TABLE Stat_Types(
+    ID serial PRIMARY KEY,
+    stat_type VARCHAR(20)
+);
+
+CREATE TABLE Essence_Tiers(
+    id serial PRIMARY KEY,
+    essence_level smallint,
+    tier_name VARCHAR(30),
+    tier_number smallint
+);
+
+INSERT INTO Essence_Tiers(essence_level, tier_name, tier_number) VALUES(140, 'Humble Delver''s', 1);
+INSERT INTO Essence_Tiers(essence_level, tier_name, tier_number) VALUES(140, 'Flickering Delver''s', 2);
+INSERT INTO Essence_Tiers(essence_level, tier_name, tier_number) VALUES(140, 'Lively Delver''s', 3);
+
+CREATE TABLE Essences(
+    id serial PRIMARY KEY,
+    tier_id smallint,
+    stat_amount real,
+    stat_id smallint, -- References either Main_Stats or Main_Stats
+    stat_type_id smallint REFERENCES Stat_Types(id)
+);
+
 CREATE TABLE Main_Stats_to_Raw_Stats(
     main_stat_id smallint REFERENCES Main_Stats(id),
     raw_stat_id smallint REFERENCES Raw_Stats(id),
@@ -58,3 +92,20 @@ CREATE TABLE Main_Stats_to_Raw_Stats(
 
 );
 
+CREATE TABLE Items(
+    ID serial PRIMARY KEY,
+    item_name VARCHAR(60),
+    essence_value real
+);
+
+INSERT INTO Stat_Types(stat_type) VALUES('Raw');
+INSERT INTO Stat_Types(stat_type) VALUES('Main');
+
+CREATE TABLE Item_Stats(
+    item_id integer REFERENCES Items(ID),
+    stat_id smallint, -- References either Main_Stats or Main_Stats
+    stat_type smallint REFERENCES Stat_Types(ID),
+    PRIMARY KEY (item_id, stat_id, stat_type)
+);
+
+CREATE INDEX Item_By_ItemID ON Item_Stats(item_id);

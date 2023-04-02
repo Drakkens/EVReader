@@ -1,0 +1,2 @@
+local WeaverAttributes = {} 
+return WeaverAttributes

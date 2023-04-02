@@ -1,0 +1,2 @@
+local DwarfAttributes = {} 
+return DwarfAttributes

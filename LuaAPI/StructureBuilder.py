@@ -1,6 +1,8 @@
 import os.path
 
-API_DIR = "/media/shared/Projects/Fleet/LOTRO/SSG_U25_LuaDocumentation/"
+import Utils
+
+API_DIR = Utils.get_api_directory()
 
 
 def main():
@@ -27,7 +29,6 @@ def read_structure(api_directory):
                 else:
                     # If no New Folder Created (Already Existing), Set Current to Expected
                     current_dir = "{}/".format(new_dir)
-
 
 def create_folder_structure(new_dir):
     os.mkdir(new_dir)

@@ -1,0 +1,2 @@
+local StoutAxeAttributes = {} 
+return StoutAxeAttributes

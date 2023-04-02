@@ -1,0 +1,2 @@
+local RangerAttributes = {} 
+return RangerAttributes

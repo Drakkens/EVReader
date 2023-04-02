@@ -1,0 +1,2 @@
+local ClassAttributes = {} 
+return ClassAttributes

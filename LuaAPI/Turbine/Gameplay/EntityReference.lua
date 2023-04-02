@@ -1,0 +1,2 @@
+local EntityReference = {} 
+return EntityReference

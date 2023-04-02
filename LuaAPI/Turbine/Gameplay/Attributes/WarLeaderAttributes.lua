@@ -1,0 +1,2 @@
+local WarLeaderAttributes = {} 
+return WarLeaderAttributes

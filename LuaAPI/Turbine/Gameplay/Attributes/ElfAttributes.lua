@@ -1,0 +1,2 @@
+local ElfAttributes = {} 
+return ElfAttributes

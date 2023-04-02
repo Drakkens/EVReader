@@ -1,0 +1,2 @@
+local ChickenAttributes = {} 
+return ChickenAttributes

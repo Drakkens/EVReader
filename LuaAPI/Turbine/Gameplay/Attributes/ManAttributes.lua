@@ -1,0 +1,2 @@
+local ManAttributes = {} 
+return ManAttributes

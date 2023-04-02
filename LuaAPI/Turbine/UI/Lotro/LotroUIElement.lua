@@ -1,0 +1,2 @@
+local LotroUIElement = {} 
+return LotroUIElement
