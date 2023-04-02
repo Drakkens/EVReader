@@ -1,3 +1,5 @@
+from database import database
+
 class Item:
     def __init__(self, normal_text):
         self.name = find_name(normal_text)
@@ -9,6 +11,28 @@ class Item:
         return f"""Name: {self.name}
 Essences: {self.essence_slots}
 Stats: {self.stats}"""
+
+
+def add_to_database(self):
+    for stat_name, value in self.stats.items():
+
+        if stat_name in database.database_mappings.get("MAIN_STATS"):
+            stat_type = "Main"
+        else:
+            stat_type = "Raw"
+
+        stat_name_id = database.database_mappings.get(f'{stat_type.upper()}_STATS').get
+        stat_type_id = database.database_mappings.get('STAT_TYPES').get(stat_type)
+
+    # 
+    #     database.execute_insert(DatabaseHandler.
+    #                             create_insert_query("ITEM_STATS",
+    #                                                 [item_name, stat_id, stat_type],
+    #                                                 [, stat_name_id, stat_type_id]))
+    #
+    # def get_essence_value(self):
+    #     for stat_name, value in self.stats.items():
+
 
 
 STAT_NAMES = [

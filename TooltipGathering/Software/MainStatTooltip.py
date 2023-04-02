@@ -42,12 +42,13 @@ STAT_NAMES = [
 
 
 def find_class_name(text):
-    class_separator = text[1].find(',')
-    if class_separator == -1:
-        class_separator = text[1].find('.')
+    class_text = text[1]
+    class_separator = class_text.find(',')
 
-    print(class_separator)
-    class_name = text[1][5:class_separator].capitalize().strip() or None
+    if class_separator == -1:
+        class_separator = class_text.find('.')
+
+    class_name = class_text[:class_separator].replace("AS A", "").strip().capitalize() or None
 
     return class_name
 
@@ -56,11 +57,13 @@ def find_stat_name(text):
     first_number_index = len(text[0])
     for index in range(0, len(text[0])):
         if text[0][index].isdigit():
-            print(text[0][index])
             first_number_index = index
             break
 
-    stat_name_separator = min(text[0].find(' '), first_number_index)
+    if text[0].find(' ') == -1:
+        stat_name_separator = first_number_index
+    else:
+        stat_name_separator = min(text[0].find(' '), first_number_index)
 
     stat_name = text[0][:stat_name_separator].capitalize().strip()
 
@@ -68,11 +71,15 @@ def find_stat_name(text):
 
 
 def find_stat_amount(text, stat_name_separator):
-    stat_amount_separator = text[0].find('(')
+    stat_amount_separator = text[0][stat_name_separator:].rstrip().find('(')
+
+    if stat_amount_separator == -1:
+        stat_amount_separator = (text[0][stat_name_separator:].strip()).find(' ')
+
     if stat_amount_separator == -1:
         stat_amount_separator = len(text[0])
 
-    stat_amount = text[0][stat_name_separator:stat_amount_separator]
+    stat_amount = text[0][stat_name_separator:stat_name_separator + stat_amount_separator]
 
     return stat_amount.replace(',', '').replace('.', '').strip()
 
@@ -86,18 +93,23 @@ def find_stat_contributions(amount, text):
         # Stat Contribution Section
         for index in range(contributes_section_index + 1, len(text)):
             for STAT in STAT_NAMES:
+
                 if STAT.upper() in text[index]:
-                    # ToDo: Fate (Hunter At Least) Shows \n at the end of each contribution line. Workaround
                     contribution_line = text[index]
                     if not has_number(text[index]):
                         contribution_line = text[index - 1] + " " + (text[index])
 
-                    stats[STAT] = round(int(
-                        contribution_line.replace(',', '').replace('.', '').replace('POINTS', '').replace('TO',
-                                                                                                          '').replace(
-                            STAT.upper(), '')) / int(str(amount)), 2)
-    except ValueError:
-        print("Invalid Tooltip")
+                    stat_value = int(contribution_line.replace(',', '')
+                                     .replace('.', '')
+                                     .replace('POINTS', '')
+                                     .replace('TO', '')
+                                     .replace(STAT.upper(), '')
+                                     .strip())
+                    print(stat_value)
+
+                    stats[STAT] = round(stat_value / int(amount), 2)
+    except Exception as e:
+        print(f"{index}: {str(e)}")
 
     return stats
 

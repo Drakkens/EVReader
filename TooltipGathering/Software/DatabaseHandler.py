@@ -7,6 +7,7 @@ def create_insert_query(table_name, table_fields, insertion_values):
 
 class DatabaseHandler:
     connection = None
+    database_mappings = get_id_mappings()
 
     def __init__(self):
         self.connection = self.get_database_connection()
@@ -60,6 +61,16 @@ class DatabaseHandler:
 
         return database_connection
 
+    def get_essences(self):
+        essence_values = {}
+
+        query = "SELECT stat_amount, stat_id, stat_type_id FROM Essences WHERE"
+        result = self.execute_select(query)
+
+        for essence in essences:
+
+        # return essence_values
+
     def get_id_mappings(self):
 
         mappings = {}
@@ -67,6 +78,8 @@ class DatabaseHandler:
         queries = {'CLASSES_QUERY': "SELECT class_name, id FROM Classes",
                    'MAIN_STATS_QUERY': "SELECT stat_name, id FROM Main_Stats",
                    'RAW_STATS_QUERY': "SELECT stat_name, id FROM Raw_Stats",
+                   'ARMOUR_TYPES_QUERY': "SELECT armour_type, id FROM Armour_Types",
+                   'STAT_TYPES_QUERY': "SELECT stat_type, id FROM Stat_Types",
                    }
 
         for key, query in queries.items():
