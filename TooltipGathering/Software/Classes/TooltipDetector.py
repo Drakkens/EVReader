@@ -204,7 +204,7 @@ def cover_unwanted_icons(image):
     essence_slots_positions = find_rectangles(100, analysis_essences)
     embers_icon_positions = find_rectangles(100, analysis_embers)
 
-    if 255 in equipped_text_borders[10:35, 15:130]:
+    if 255 in equipped_text_borders[10:15, 15:25]:
         image[25:65, 5:40] = 0
     else:
         image[5:45, 5:40] = 0

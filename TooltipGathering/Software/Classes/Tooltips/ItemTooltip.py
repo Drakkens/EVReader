@@ -1,3 +1,5 @@
+import string
+
 from Classes.Database import DatabaseHandler
 from Classes.Utils.Utils import STAT_NAMES
 
@@ -26,6 +28,7 @@ Stats: {self.stats}"""
             else:
                 stat_type = "Raw"
 
+            # ToDo: Map Main Stats to Raw Stats, then do Math
             stat_name_id = DatabaseHandler.DatabaseHandler.mappings.get(f'{stat_type.upper()}_STATS').get
             stat_type_id = DatabaseHandler.DatabaseHandler.mappings.get('STAT_TYPES').get(stat_type)
 
@@ -84,11 +87,12 @@ Stats: {self.stats}"""
     def find_item_stats(self, item_level_index):
         stats = {}
 
-        # ToDo: Optimize loop
         for index in range(item_level_index, len(self.text)):
-            for STAT in STAT_NAMES:
-                if STAT in self.text[index]:
-                    stats[STAT] = self.text[index].replace(STAT, '').replace('+', '').replace(',', '').strip()
+            # Remove All Numbers/Symbols from String. Only Stat Name Remains
+            letters_only_text = self.text[index].translate(str.maketrans("", "", "+-*,." + string.digits)).strip()
+            if letters_only_text in STAT_NAMES:
+                stat = STAT_NAMES[STAT_NAMES.index(letters_only_text)]
+                stats[stat] = self.text[index].replace(stat, '').replace('+', '').replace(',', '').strip()
 
             # ToDo: Same issue as described in get_essence_slots 
             if "ESSENCE" in self.text[index] or "EMPTY SLOT" in self.text[index]:
