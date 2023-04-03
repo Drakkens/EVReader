@@ -7,10 +7,15 @@ def create_insert_query(table_name, table_fields, insertion_values):
 
 class DatabaseHandler:
     connection = None
-    database_mappings = get_id_mappings()
+    mappings = None
+    essence_values = None
 
     def __init__(self):
         self.connection = self.get_database_connection()
+        DatabaseHandler.mappings = self.get_id_mappings()
+
+        # ToDo: Hardcoded Essence Tier
+        DatabaseHandler.essence_values = self.get_essences(3)
 
     def execute_select(self, query: str):
         cursor = self.connection.cursor()
@@ -35,12 +40,11 @@ class DatabaseHandler:
 
         try:
             cursor.execute(query, values)
-            self.connection.commit()
             inserted_rows = cursor.rowcount
             print(f"Successfully Inserted {inserted_rows} Rows")
-
-        except Exception:
-            print("Error On Insertion!")
+            self.connection.commit()
+        except Exception as e:
+            print(f"Error On Insertion!: {str(e)}")
 
         finally:
             cursor.close()
@@ -61,15 +65,22 @@ class DatabaseHandler:
 
         return database_connection
 
-    def get_essences(self):
+    def get_essences(self, essence_tier):
         essence_values = {}
 
-        query = "SELECT stat_amount, stat_id, stat_type_id FROM Essences WHERE"
-        result = self.execute_select(query)
+        essences_query = f"""SELECT stat_amount, stat_id, stat_type_id
+        FROM Essences
+        WHERE tier_id = {essence_tier}"""
 
-        for essence in essences:
+        result = self.execute_select(essences_query)
 
-        # return essence_values
+        for essence in result:
+            stat_type = self.mappings.get('STAT_TYPES').get(result[2])
+            essence_stat = self.mappings.get(f'{stat_type.upper()}_STATS').get(result[1])
+
+            essence_tier[essence_stat] = result[0]
+
+        return essence_values
 
     def get_id_mappings(self):
 

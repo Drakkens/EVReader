@@ -1,4 +1,4 @@
-from database import database
+from DatabaseHandler import DatabaseHandler
 
 class Item:
     def __init__(self, normal_text):
@@ -14,26 +14,32 @@ Stats: {self.stats}"""
 
 
 def add_to_database(self):
+    essence_slices = self.get_essence_value()
     for stat_name, value in self.stats.items():
 
-        if stat_name in database.database_mappings.get("MAIN_STATS"):
+        if stat_name in DatabaseHandler.database_mappings.get("MAIN_STATS"):
             stat_type = "Main"
         else:
             stat_type = "Raw"
 
-        stat_name_id = database.database_mappings.get(f'{stat_type.upper()}_STATS').get
-        stat_type_id = database.database_mappings.get('STAT_TYPES').get(stat_type)
-
-    # 
-    #     database.execute_insert(DatabaseHandler.
-    #                             create_insert_query("ITEM_STATS",
-    #                                                 [item_name, stat_id, stat_type],
-    #                                                 [, stat_name_id, stat_type_id]))
-    #
-    # def get_essence_value(self):
-    #     for stat_name, value in self.stats.items():
+        stat_name_id = DatabaseHandler.database_mappings.get(f'{stat_type.upper()}_STATS').get
+        stat_type_id = DatabaseHandler.database_mappings.get('STAT_TYPES').get(stat_type)
 
 
+        database.execute_insert(DatabaseHandler.
+                                create_insert_query("ITEM_STATS",
+                                                    [item_name, stat_id, stat_type, essence_value],
+                                                    [self.name, stat_name_id, stat_type_id, essence_slices]))
+
+
+    def get_essence_value(self):
+        total_essence_slices = 0
+        for stat_name, amount in self.stats.items():
+            essence_value = DatabaseHandler.essence_values.get(stat_name)
+
+            total_essence_slices += round(amount / essence_value, 2)
+
+        return total_essence_slices
 
 STAT_NAMES = [
     'Armour',
