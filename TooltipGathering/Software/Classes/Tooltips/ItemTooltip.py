@@ -1,8 +1,7 @@
-from ..Database.DatabaseHandler
-from Classes.Utils import STAT_NAMES
+from TooltipGathering.Software.Classes.Database import DatabaseHandler
+from TooltipGathering.Software.Classes.Utils.Utils import STAT_NAMES
 
 database = DatabaseHandler.DatabaseHandler()
-
 
 class ItemTooltip:
     def __init__(self, text):
