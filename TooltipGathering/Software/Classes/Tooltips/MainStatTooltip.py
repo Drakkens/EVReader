@@ -1,6 +1,6 @@
 import os
 
-from TooltipGathering.Software.Classes.Utils.Utils import STAT_NAMES, has_number
+from Classes.Utils.Utils import STAT_NAMES, has_number
 from TooltipInterface import TooltipInterface
 
 

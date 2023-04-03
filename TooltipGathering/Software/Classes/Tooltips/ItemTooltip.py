@@ -1,5 +1,5 @@
-from TooltipGathering.Software.Classes.Database import DatabaseHandler
-from TooltipGathering.Software.Classes.Utils.Utils import STAT_NAMES
+from Classes.Database import DatabaseHandler
+from Classes.Utils.Utils import STAT_NAMES
 
 database = DatabaseHandler.DatabaseHandler()
 
