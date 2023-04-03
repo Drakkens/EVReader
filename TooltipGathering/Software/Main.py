@@ -26,4 +26,4 @@ def main(mode):
         sys.exit(130)
 
 
-main(TooltipDetector.Mode.STATS)
+main(TooltipDetector.Mode.ITEM)

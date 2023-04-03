@@ -220,7 +220,7 @@ def process_stat_tooltip(screenshot, tooltip, mode):
     human_image = get_tooltip_image(screenshot, tooltip, False, mode)
     ocr_image = get_tooltip_image(screenshot, tooltip, True, mode)
 
-    TEMPLATE = './Templates/0.jpg'
+    TEMPLATE = r'C:\Users\joanf\Documents\Fleet\LOTRO-Repo\TooltipGathering\Software\Templates\0.jpg'
     locations = find_template_locations(ocr_image, TEMPLATE)
     delete_zeros(ocr_image, locations, TEMPLATE)
     reinsert_zeros_and_translate_content(ocr_image, locations, TEMPLATE)
@@ -238,8 +238,8 @@ def process_stat_tooltip(screenshot, tooltip, mode):
     stat_tooltip: MainStatTooltip = MainStatTooltip(processed_text_normal)
 
     # ToDo: Fix Signature
-    stat_tooltip.save_image(Image.fromarray(human_image))
-    stat_tooltip.save_image(Image.fromarray(ocr_image), True)
+    # stat_tooltip.save_image(Image.fromarray(human_image))
+    # stat_tooltip.save_image(Image.fromarray(ocr_image), True)
     print(stat_tooltip)
 
     for key, value in stat_tooltip.stats.items():
@@ -266,7 +266,7 @@ def process_item_tooltip(screenshot, tooltip, mode):
                     .split("\n"))))
 
     item = ItemTooltip(processed_text_normal)
-    human_image.save(f"./Tooltips/Items/{item.name}.jpg")
-    ocr_image.save(f"./Tooltips/Items/{item.name}_ocr.jpg")
+    # human_image.save(f"./Tooltips/Items/{item.name}.jpg")
+    # ocr_image.save(f"./Tooltips/Items/{item.name}_ocr.jpg")
 
     print(item)

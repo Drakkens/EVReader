@@ -1,4 +1,10 @@
 STAT_NAMES = [
+    'Armour',
+    'Might',
+    'Agility',
+    'Vitality',
+    'Will',
+    'Fate',
     'Critical Rating',
     'Finesse Rating',
     'Physical Mastery Rating',
