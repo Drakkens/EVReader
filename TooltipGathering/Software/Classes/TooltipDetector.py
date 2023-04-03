@@ -11,10 +11,10 @@ import pytesseract
 import csv
 import os
 
-from Rectangle import Rectangle
-from Item import Item
-from MainStatTooltip import MainStatTooltip
-import DatabaseHandler
+from Utils.Rectangle import Rectangle
+from Tooltips.ItemTooltip import ItemTooltip
+from Tooltips.MainStatTooltip import MainStatTooltip
+from Database.DatabaseHandler import DatabaseHandler, create_insert_query
 
 
 class Mode(Enum):
@@ -22,8 +22,8 @@ class Mode(Enum):
     STATS = 2
 
 
-database = DatabaseHandler.DatabaseHandler()
-database_mappings = DatabaseHandler.DatabaseHandler.mappings
+database = DatabaseHandler()
+database_mappings = DatabaseHandler.mappings
 
 TARGET_WINDOW_TITLE = 'The Lord of the Rings Online™'
 TESSERACT_CONFIG = "--oem 3, --psm 11"
@@ -222,7 +222,6 @@ def process_stat_tooltip(screenshot, tooltip, mode):
     human_image = get_tooltip_image(screenshot, tooltip, False, mode)
     ocr_image = get_tooltip_image(screenshot, tooltip, True, mode)
 
-
     TEMPLATE = './Templates/0.jpg'
     locations = find_template_locations(ocr_image, TEMPLATE)
     delete_zeros(ocr_image, locations, TEMPLATE)
@@ -240,6 +239,7 @@ def process_stat_tooltip(screenshot, tooltip, mode):
 
     stat_tooltip: MainStatTooltip = MainStatTooltip(processed_text_normal)
 
+    # ToDo: Fix Signature
     stat_tooltip.save_image(Image.fromarray(human_image))
     stat_tooltip.save_image(Image.fromarray(ocr_image), True)
     print(stat_tooltip)
@@ -249,10 +249,9 @@ def process_stat_tooltip(screenshot, tooltip, mode):
         raw_stat_id = database_mappings.get("RAW_STATS").get(key)
         class_id = database_mappings.get("CLASSES").get(stat_tooltip.class_name)
 
-        database.execute_insert(DatabaseHandler
-                                .create_insert_query("Main_Stats_to_Raw_Stats",
-                                                     ["main_stat_id", "raw_stat_id", "class_id", "amount"],
-                                                     [main_stat_id, raw_stat_id, class_id, value]))
+        database.execute_insert(create_insert_query("Main_Stats_to_Raw_Stats",
+                                                    ["main_stat_id", "raw_stat_id", "class_id", "amount"],
+                                                    [main_stat_id, raw_stat_id, class_id, value]))
 
 
 def process_item_tooltip(screenshot, tooltip, mode):
@@ -268,7 +267,7 @@ def process_item_tooltip(screenshot, tooltip, mode):
                     .replace("-", "")
                     .split("\n"))))
 
-    item = Item(processed_text_normal)
+    item = ItemTooltip(processed_text_normal)
     human_image.save(f"./Tooltips/Items/{item.name}.jpg")
     ocr_image.save(f"./Tooltips/Items/{item.name}_ocr.jpg")
 

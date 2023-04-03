@@ -1,23 +1,10 @@
 import os
 
-STAT_NAMES = [
-    'Critical Rating',
-    'Finesse Rating',
-    'Physical Mastery Rating',
-    'Tactical Mastery Rating',
-    'Physical Mitigation',
-    'Tactical Mitigation',
-    'Critical Defence',
-    'Block Rating',
-    'Parry Rating',
-    'Evade Rating',
-    'Outgoing Healing Rating',
-    'Incoming Healing Rating',
-    'Resistance Rating',
-]
+from TooltipGathering.Software.Classes.Utils.Utils import STAT_NAMES, has_number
+from TooltipInterface import TooltipInterface
 
 
-class MainStatTooltip:
+class MainStatTooltip(TooltipInterface):
     def __init__(self, text):
         self.text = text
         self.class_name = self.find_class_name()
@@ -31,14 +18,14 @@ Class: {self.class_name}
 Amount: {self.amount}
 Stats: {self.stats}"""
 
-    def save_image(self, image, ocr=False):
+    def save_image(self, ocr=False):
         if not os.path.isdir(f"./Tooltips/{self.class_name}"):
             os.mkdir(f"./Tooltips/{self.class_name}")
 
         if ocr:
-            image.save(f"./Tooltips/{self.class_name}/{self.stat_name}_ocr.jpg")
+            self.image.save(f"./Tooltips/{self.class_name}/{self.stat_name}_ocr.jpg")
         else:
-            image.save(f"./Tooltips/{self.class_name}/{self.stat_name}.jpg")
+            self.image.save(f"./Tooltips/{self.class_name}/{self.stat_name}.jpg")
 
     def find_class_name(self):
         class_text = self.text[1]
@@ -111,10 +98,3 @@ Stats: {self.stats}"""
             print(f"{index}: {str(e)}")
 
         return stats
-
-
-def has_number(string):
-    for char in string:
-        if char.isdigit():
-            return True
-        return False
