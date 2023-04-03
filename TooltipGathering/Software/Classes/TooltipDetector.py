@@ -1,20 +1,18 @@
 import sys
-from time import sleep
-from PIL import Image
 from enum import Enum
+from time import sleep
 
 import cv2 as cv
+import numpy as np
 import pyautogui
 import pygetwindow
-import numpy as np
 import pytesseract
-import csv
-import os
+from PIL import Image
 
-from Utils.Rectangle import Rectangle
-from Tooltips.ItemTooltip import ItemTooltip
-from Tooltips.MainStatTooltip import MainStatTooltip
-from Database.DatabaseHandler import DatabaseHandler, create_insert_query
+from Classes.Database.DatabaseHandler import DatabaseHandler, create_insert_query
+from Classes.Tooltips.ItemTooltip import ItemTooltip
+from Classes.Tooltips.MainStatTooltip import MainStatTooltip
+from Classes.Utils.Rectangle import Rectangle
 
 
 class Mode(Enum):
@@ -272,28 +270,3 @@ def process_item_tooltip(screenshot, tooltip, mode):
     ocr_image.save(f"./Tooltips/Items/{item.name}_ocr.jpg")
 
     print(item)
-
-
-def main(mode):
-    try:
-        while True:
-            sleep(1)
-
-            result = get_screen_contents()
-            if result is not None:
-                screenshot, analysis = result
-                tooltips = find_rectangles(650, analysis)
-
-                for tooltip in tooltips:
-                    if mode == Mode.ITEM:
-                        process_item_tooltip(screenshot, tooltip, mode)
-
-                    elif mode == Mode.STATS:
-                        process_stat_tooltip(screenshot, tooltip, mode)
-
-    except KeyboardInterrupt:
-        print("Exiting...")
-        sys.exit(130)
-
-
-main(Mode.STATS)
