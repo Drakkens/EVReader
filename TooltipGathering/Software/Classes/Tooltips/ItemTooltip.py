@@ -3,6 +3,7 @@ from Classes.Utils.Utils import STAT_NAMES
 
 database = DatabaseHandler.DatabaseHandler()
 
+
 class ItemTooltip:
     def __init__(self, text):
         self.text = text
@@ -65,6 +66,7 @@ Stats: {self.stats}"""
             if "Disenchants into" in string:
                 break
 
+            # ToDo: Some long name essences have the essence word cut off. Need a workaround (Maybe using the Slots Border Position?)
             if "EMPTY SLOT" in string or "ESSENCE" in string:
                 amount_of_slots += 1
 
@@ -82,11 +84,13 @@ Stats: {self.stats}"""
     def find_item_stats(self, item_level_index):
         stats = {}
 
+        # ToDo: Optimize loop
         for index in range(item_level_index, len(self.text)):
             for STAT in STAT_NAMES:
                 if STAT in self.text[index]:
                     stats[STAT] = self.text[index].replace(STAT, '').replace('+', '').replace(',', '').strip()
 
+            # ToDo: Same issue as described in get_essence_slots 
             if "ESSENCE" in self.text[index] or "EMPTY SLOT" in self.text[index]:
                 break
 

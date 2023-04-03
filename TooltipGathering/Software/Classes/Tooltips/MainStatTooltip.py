@@ -3,6 +3,8 @@ import os
 from Classes.Utils.Utils import STAT_NAMES, has_number
 from Classes.Tooltips.TooltipInterface import TooltipInterface
 
+TOOLTIP_DIR = r"C:/Users/joanf/Documents/Fleet/LOTRO-Repo/TooltipGathering/Software/Tooltips/"
+
 
 class MainStatTooltip(TooltipInterface):
     def __init__(self, text):
@@ -19,13 +21,14 @@ Amount: {self.amount}
 Stats: {self.stats}"""
 
     def save_image(self, ocr=False):
-        if not os.path.isdir(f"./Tooltips/{self.class_name}"):
-            os.mkdir(f"./Tooltips/{self.class_name}")
+        if not os.path.isdir(f"{TOOLTIP_DIR}{self.class_name}"):
+            os.mkdir(f"{TOOLTIP_DIR}{self.class_name}")
 
-        if ocr:
-            self.image.save(f"./Tooltips/{self.class_name}/{self.stat_name}_ocr.jpg")
-        else:
-            self.image.save(f"./Tooltips/{self.class_name}/{self.stat_name}.jpg")
+        # ToDo:
+        # if ocr:
+            # self.image.save(f"{TOOLTIP_DIR}{self.class_name}/{self.stat_name}_ocr.jpg")
+        # else:
+            # self.image.save(f"{TOOLTIP_DIR}{self.class_name}/{self.stat_name}.jpg")
 
     def find_class_name(self):
         class_text = self.text[1]
