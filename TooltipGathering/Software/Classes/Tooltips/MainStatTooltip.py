@@ -1,7 +1,7 @@
 import os
 
 from Classes.Utils.Utils import STAT_NAMES, has_number
-from TooltipInterface import TooltipInterface
+from Classes.Tooltips.TooltipInterface import TooltipInterface
 
 
 class MainStatTooltip(TooltipInterface):

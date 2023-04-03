@@ -1,5 +1,5 @@
 from ..Database.DatabaseHandler
-from Classes.Utils import STAT_NAMES
+from Software.Classes.Utils import STAT_NAMES
 
 database = DatabaseHandler.DatabaseHandler()
 
