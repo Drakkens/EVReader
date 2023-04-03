@@ -3,6 +3,7 @@ import os
 
 class MainStatTooltip:
     def __init__(self, text):
+        print(text)
         self.class_name = find_class_name(text)
         self.stat_name, stat_name_separator = find_stat_name(text)
         self.amount = find_stat_amount(text, stat_name_separator)
@@ -50,6 +51,11 @@ def find_class_name(text):
 
     class_name = class_text[:class_separator].replace("AS A", "").strip().capitalize() or None
 
+    if class_name == 'Loremaster':
+        class_name = 'Lore-Master'
+    if class_name == 'Runekeeper':
+        class_name = 'Rune-Keeper'
+
     return class_name
 
 
@@ -88,7 +94,6 @@ def find_stat_contributions(amount, text):
     stats = {}
     try:
         contributes_section_index = text.index('CONTRIBUTES')
-        print(text)
 
         # Stat Contribution Section
         for index in range(contributes_section_index + 1, len(text)):
@@ -105,7 +110,6 @@ def find_stat_contributions(amount, text):
                                      .replace('TO', '')
                                      .replace(STAT.upper(), '')
                                      .strip())
-                    print(stat_value)
 
                     stats[STAT] = round(stat_value / int(amount), 2)
     except Exception as e:

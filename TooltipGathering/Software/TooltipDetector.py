@@ -16,16 +16,84 @@ from Item import Item
 from MainStatTooltip import MainStatTooltip
 import DatabaseHandler
 
+
 class Mode(Enum):
     ITEM = 1
     STATS = 2
 
-database = DatabaseHandler.DatabaseHandler().get_database_connection()
-database_mappings = database.get_id_mappings()
+
+database = DatabaseHandler.DatabaseHandler()
+database_mappings = DatabaseHandler.DatabaseHandler.mappings
 
 TARGET_WINDOW_TITLE = 'The Lord of the Rings Online™'
 TESSERACT_CONFIG = "--oem 3, --psm 11"
 pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
+
+def find_template_locations(image_to_search, template: str):
+    template_image = cv.cvtColor(cv.imread(template), cv.COLOR_RGB2BGR)
+
+    # Set Images to Gray for more accurate Masking
+    image_gray = cv.cvtColor(image_to_search, cv.COLOR_BGR2GRAY)
+    template_gray = cv.cvtColor(template_image, cv.COLOR_BGR2GRAY)
+
+    result = cv.matchTemplate(image_gray, template_gray, cv.TM_CCOEFF_NORMED)
+    # Find locations with a high similarity score
+    locations = np.where(result >= 0.85)
+    locations = list(zip(*locations[::-1]))
+
+    return locations
+
+
+def delete_zeros(image, locations, template):
+    template_image = cv.cvtColor(cv.imread(template), cv.COLOR_RGB2BGR)
+    template_gray = cv.cvtColor(template_image, cv.COLOR_BGR2GRAY)
+
+    image_gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+
+    for top_left in locations:
+        bottom_right = (top_left[0] + template_gray.shape[1], top_left[1] + template_gray.shape[0])
+
+        x0, y0 = top_left
+        x1, y1 = bottom_right
+
+        # Get every pixel, and if number < 0, set to 0.
+        for x in range(0, x1 - x0):
+            for y in range(0, y1 - y0):
+                if image_gray[y0 + y, x0 + x] <= template_gray[y, x]:
+                    pixel = 0
+                elif image_gray[y0 + y, x0 + x] - template_gray[y, x] < 40:
+                    pixel = 0
+                else:
+                    pixel = 205
+                # Deletes Found 0s
+                image[(y0 + y), (x0 + x)] = pixel
+
+
+def reinsert_zeros_and_translate_content(image, locations, template):
+    # ToDo: Could use some work on reinsertion (8 and 9 trailing after a 0 are partially missing, tho it did seem to read them well)
+    template_image = cv.cvtColor(cv.imread(template), cv.COLOR_RGB2BGR)
+    template_gray = cv.cvtColor(template_image, cv.COLOR_BGR2GRAY)
+
+    image_gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+    image_height, image_width = image.shape[:-1]
+
+    for top_left in locations:
+        bottom_right = (top_left[0] + template_gray.shape[1], top_left[1] + template_gray.shape[0])
+        x0, y0 = top_left
+        x1, y1 = bottom_right
+
+        # Gets Content to the Right of Inserted 0 (and 2 pixels below, because 9 is a bit taller)
+        pixels_to_the_right = image[y0:y1 + 2, (x1 + 3):image_width - 2].copy()
+
+        # Inserts New 0s 3 pixels to the right of the original
+        image[y0:y1, (x0 + 3):(x1 + 3)] = template_image
+
+        # Deletes that content
+        image[y0:y1 + 2, (x1 + 3):image_width] = 0
+
+        # Reinserts 5 pixels to the right
+        image[y0:y1 + 2, (x1 + 5):image_width] = pixels_to_the_right
 
 
 def convert_to_binary(screenshot, dilate=False):
@@ -53,8 +121,6 @@ def get_screen_contents():
 
 
 def find_rectangles(area, analysis):
-    count = 0
-
     total_labels = analysis[0]
     values = analysis[2]
 
@@ -88,6 +154,7 @@ def convert_stat_tooltip_to_ocr(image):
     # Name font issues with higher threshold
     white_pixels_name = cv.inRange(hsv_image[0:hsv_image.shape[0] // 2, 0:hsv_image.shape[1]], (0, 0, 55),
                                    (180, 0, 255))
+
     # Contribution issues with lower threshold
     white_pixels_contribution = cv.inRange(hsv_image[hsv_image.shape[0] // 2:hsv_image.shape[0], 0:hsv_image.shape[1]],
                                            (0, 0, 75), (180, 0, 255))
@@ -112,7 +179,7 @@ def get_tooltip_image(screenshot, tooltip, ocr=False, mode=None):
     resized = cv.resize(cropped, (tooltip.width * 2, tooltip.height * 2), cv.INTER_AREA)
     # cropped = cv.filter2D(cropped, -1, np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]]))
 
-    return Image.fromarray(resized)
+    return resized
 
 
 def cover_unwanted_icons(image):
@@ -155,21 +222,27 @@ def process_stat_tooltip(screenshot, tooltip, mode):
     human_image = get_tooltip_image(screenshot, tooltip, False, mode)
     ocr_image = get_tooltip_image(screenshot, tooltip, True, mode)
 
-    tooltip_text_normal = pytesseract.image_to_string(ocr_image,
-                                                      config=TESSERACT_CONFIG, lang='LOTRO-Stats-2')
+
+    TEMPLATE = './Templates/0.jpg'
+    locations = find_template_locations(ocr_image, TEMPLATE)
+    delete_zeros(ocr_image, locations, TEMPLATE)
+    reinsert_zeros_and_translate_content(ocr_image, locations, TEMPLATE)
+
+    tooltip_text_normal = pytesseract.image_to_string(Image.fromarray(ocr_image),
+                                                      config=TESSERACT_CONFIG, lang='LOTRONumbers4+eng')
     processed_text_normal = list(
-                                filter(None,
-                                       list(tooltip_text_normal
-                                             .upper()
-                                             .replace(":", "")
-                                             .replace("-", "")
-                                             .split("\n"))))
+        filter(None,
+               list(tooltip_text_normal
+                    .upper()
+                    .replace(":", "")
+                    .replace("-", "")
+                    .split("\n"))))
 
     stat_tooltip: MainStatTooltip = MainStatTooltip(processed_text_normal)
 
-    stat_tooltip.save_image(human_image)
-    stat_tooltip.save_image(ocr_image, True)
-
+    stat_tooltip.save_image(Image.fromarray(human_image))
+    stat_tooltip.save_image(Image.fromarray(ocr_image), True)
+    print(stat_tooltip)
 
     for key, value in stat_tooltip.stats.items():
         main_stat_id = database_mappings.get("MAIN_STATS").get(stat_tooltip.stat_name)
@@ -178,21 +251,22 @@ def process_stat_tooltip(screenshot, tooltip, mode):
 
         database.execute_insert(DatabaseHandler
                                 .create_insert_query("Main_Stats_to_Raw_Stats",
-                                                    ["main_stat_id", "raw_stat_id", "class_id", "amount"],
-                                                    [main_stat_id, raw_stat_id, class_id, value]))
+                                                     ["main_stat_id", "raw_stat_id", "class_id", "amount"],
+                                                     [main_stat_id, raw_stat_id, class_id, value]))
+
 
 def process_item_tooltip(screenshot, tooltip, mode):
     human_image = get_tooltip_image(screenshot, tooltip, False, mode)
     ocr_image = get_tooltip_image(screenshot, tooltip, True, mode)
 
-    tooltip_text_normal = pytesseract.image_to_string(ocr_image,
-                                                      config=TESSERACT_CONFIG, lang='LOTRO-Stats-2')
+    tooltip_text_normal = pytesseract.image_to_string(Image.fromarray(ocr_image),
+                                                      config=TESSERACT_CONFIG, lang='eng')
     processed_text_normal = list(
-                                filter(None,
-                                       list(tooltip_text_normal
-                                            .replace(":", "")
-                                            .replace("-", "")
-                                            .split("\n"))))
+        filter(None,
+               list(tooltip_text_normal
+                    .replace(":", "")
+                    .replace("-", "")
+                    .split("\n"))))
 
     item = Item(processed_text_normal)
     human_image.save(f"./Tooltips/Items/{item.name}.jpg")
@@ -200,10 +274,11 @@ def process_item_tooltip(screenshot, tooltip, mode):
 
     print(item)
 
+
 def main(mode):
     try:
         while True:
-            sleep(0.05)
+            sleep(1)
 
             result = get_screen_contents()
             if result is not None:
@@ -215,7 +290,7 @@ def main(mode):
                         process_item_tooltip(screenshot, tooltip, mode)
 
                     elif mode == Mode.STATS:
-                        process_stat_tooltip(creenshot, tooltip, mode)
+                        process_stat_tooltip(screenshot, tooltip, mode)
 
     except KeyboardInterrupt:
         print("Exiting...")

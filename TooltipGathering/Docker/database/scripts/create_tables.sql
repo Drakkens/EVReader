@@ -92,6 +92,29 @@ CREATE TABLE Main_Stats_to_Raw_Stats(
 
 );
 
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 1, 1);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 2, 1);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 3, 1);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 4, 1);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 5, 1);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 6, 1);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 7, 1);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 8, 1);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 9, 1);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 10, 1);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 11, 1);
+
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 1, 0.2);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 2, 0.2);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 3, 0.2);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 4, 0.2);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 5, 0.2);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 6, 0.2);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 7, 0.2);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 8, 0.2);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 9, 0.2);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 10, 0.2);
+INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 11, 0.2);
 CREATE TABLE Items(
     ID serial PRIMARY KEY,
     item_name VARCHAR(60),

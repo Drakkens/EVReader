@@ -28,11 +28,26 @@ def convert_stat_tooltip_to_ocr(image):
     image[reshaped_white_pixels == 255] = (0, 255, 0)
 
 
-# ToDo: Find 0s, move to right, try guessing leftover number
+def find_template_locations(image_to_search, template: str):
+    template_image = cv.cvtColor(cv.imread(template), cv.RGB2GBR)
+    image_height, image_width = image_to_search.shape[:-1]
+
+    # Set Images to Gray for more accurate Masking
+    image_gray = cv.cvtColor(image_to_search, cv.BGR2GRAY)
+    template_gray = cv.cvtColor(template_image, cv.BGR2GRAY)
+
+    result = cv.matchTemplate(input_gray, template_gray, cv.TM_CCOEFF_NORMED)
+    # Find locations with a high similarity score
+    locations = np.where(result >= 0.85)
+    locations = list(zip(*locations[::-1]))
+
+    return locations
+
 # Load the input and template images
-input_img = cv.imread('../Tooltips/Warden/Will.jpg')
-# input_img = cv.imread('../Tooltips/Beorning/Agility.jpg')
+input_img = cv.imread('../Tooltips/Hunter/Vitality.jpg')
 template_img = cv.imread('./0.jpg')
+
+image_height, image_width = input_img.shape[:-1]
 
 # Convert both images to grayscale
 input_gray = cv.cvtColor(input_img, cv.COLOR_BGR2GRAY)
@@ -41,66 +56,68 @@ template_gray = cv.cvtColor(template_img, cv.COLOR_BGR2GRAY)
 # Apply template matching
 result = cv.matchTemplate(input_gray, template_gray, cv.TM_CCOEFF_NORMED)
 
-thresh = cv.threshold(result, 0.90, 1, cv.THRESH_BINARY)[1]
-
-# Define Translation Matrix (M = [[1, 0, translationXAxis], [0, 1, translationYAxis]], where translation = Px moved
-translationXAxis = 100
-translationYAxis = 0
-
-M = np.float32([[1, 0, translationXAxis], [0, 1, translationYAxis]])
-# Image Shape
-rows, columns = input_img.shape[:2]
-translated_image = cv.warpAffine(thresh, M, (columns, rows))
-
 # Set a threshold value
-threshold = 0.7
+threshold = 0.85
 
 # Find locations with a high similarity score
 locations = np.where(result >= threshold)
 locations = list(zip(*locations[::-1]))
 
-# Draw a rectangle around each match in the input image
-# print(len(locations))
-print(len(locations))
+print((locations))
 
-
-for loc in locations:
-    top_left = loc
-    bottom_right = (top_left[0] + template_gray.shape[1], top_left[1] + template_gray.shape[0])
-    cv.rectangle(input_img, top_left, bottom_right, (0, 0, 255), 2)
-
-    # print(f"Tooltip \n  {input_gray[top_left[1]:bottom_right[1], top_left[0]:bottom_right[0]]}")
-    # print(f"Zero \n  {template_gray}")
-
-    # Need to make it so negative numbers = 0 instead of 255
-
+def delete_zero(top_left, bottom_right):
     x0, y0 = top_left
     x1, y1 = bottom_right
-    # print('Comparison:')
+
+    # Get every pixel, and if number < 0, set to 0.
     for x in range(0, x1 - x0):
         for y in range(0, y1 - y0):
-
             if input_gray[y0 + y, x0 + x] <= template_gray[y, x]:
                 pixel = 0
             elif input_gray[y0 + y, x0 + x] - template_gray[y, x] < 40:
                 pixel = 0
             else:
-                # print(f'{input_gray[y0 + y, x0 + x]}, {template_gray[y, x]}')
                 pixel = 205
-
+            # Deletes Found 0s
             input_img[(y0 + y), (x0 + x)] = pixel
+
+# Locations = Array of (x0, y0) of Matches
+for top_left in locations:
+    bottom_right = (top_left[0] + template_gray.shape[1], top_left[1] + template_gray.shape[0])
+    x0, y0 = top_left
+    x1, y1 = bottom_right
+
+    delete_zero(top_left, bottom_right)
+
+
+for top_left in locations:
+    bottom_right = (top_left[0] + template_gray.shape[1], top_left[1] + template_gray.shape[0])
+    x0, y0 = top_left
+    x1, y1 = bottom_right
+
+    # Gets Content to the Right of Inserted 0 (and 2 pixels below, because 9 is a bit taller)
+    pixels_to_the_right = input_img[y0:y1 + 2, (x1 + 3):image_width - 2].copy()
+
+    # Inserts New 0s 3 pixels to the right of the original
+    input_img[y0:y1, (x0 + 3):(x1 + 3)] = template_img
+
+    # Deletes that content
+    input_img[y0:y1 + 2, (x1 + 3):image_width] = 0
+
+    # Reinserts 5 pixels to the right
+    input_img[y0:y1 + 2, (x1 + 5):image_width] = pixels_to_the_right
+
+
+    # input_img[input_img[y0:y1 + 2, x1 + 6:image_width - 3]] = input_img[y0:y1 + 2, x1 + 3:image_width]
 
     # print(f"Tooltip Result \n {input_img[top_left[1]:bottom_right[1], top_left[0]:bottom_right[0]]}")
 TESSERACT_CONFIG = "--oem 3, --psm 11, -c tessedit_debug_fonts=1"
 
 convert_stat_tooltip_to_ocr(input_img)
 
-
-mod_in_img = cv.cvtColor(input_img, cv.COLOR_BGR2GRAY)
-
 print(pytesseract.image_to_string(input_img,
-                                  config=TESSERACT_CONFIG, lang='LOTRO-Stats-2')
-      )
+                                  config=TESSERACT_CONFIG,
+                                  lang='LOTRONumbers4+eng'))
 # Show the result
 cv.imshow('Result', input_img)
 cv.waitKey(0)
