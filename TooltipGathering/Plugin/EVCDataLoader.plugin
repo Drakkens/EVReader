@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<Plugin>
+ <Information>
+  <Name>EVCDataLoader</Name>
+  <Author>Drakkens</Author>
+  <Version>1.00</Version>
+ </Information>
+ <Package>Drakkens.EVC.Child</Package>
+ <Configuration Apartment="EVCDataLoader" />
+</Plugin>
