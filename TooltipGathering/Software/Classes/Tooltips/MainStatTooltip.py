@@ -96,7 +96,7 @@ Stats: {self.stats}"""
                                          .replace(STAT.upper(), '')
                                          .strip())
 
-                        stats[STAT] = round(stat_value / int(amount), 2)
+                        stats[STAT] = round(stat_value / int(amount), 4)
         except Exception as e:
             print(f"{index}: {str(e)}")
 

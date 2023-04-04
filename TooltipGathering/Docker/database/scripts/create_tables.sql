@@ -8,7 +8,7 @@ INSERT INTO Armour_Types(armour_type) VALUES('Medium');
 INSERT INTO Armour_Types(armour_type) VALUES('Heavy');
 
 CREATE TABLE Classes(
-    ID serial PRIMARY KEY,
+    id serial PRIMARY KEY,
     class_name VARCHAR(15),
     armour_type smallint REFERENCES armour_types(id)
 );
@@ -65,10 +65,10 @@ CREATE TABLE Stat_Types(
 );
 
 CREATE TABLE Essence_Tiers(
-    id serial PRIMARY KEY,
     essence_level smallint,
     tier_name VARCHAR(30),
-    tier_number smallint
+    tier_number smallint,
+    PRIMARY KEY (essence_level, tier_number)
 );
 
 INSERT INTO Essence_Tiers(essence_level, tier_name, tier_number) VALUES(140, 'Humble Delver''s', 1);
@@ -76,11 +76,11 @@ INSERT INTO Essence_Tiers(essence_level, tier_name, tier_number) VALUES(140, 'Fl
 INSERT INTO Essence_Tiers(essence_level, tier_name, tier_number) VALUES(140, 'Lively Delver''s', 3);
 
 CREATE TABLE Essences(
-    id serial PRIMARY KEY,
     tier_id smallint,
     stat_amount real,
     stat_id smallint, -- References either Main_Stats or Main_Stats
-    stat_type_id smallint REFERENCES Stat_Types(id)
+    stat_type_id smallint REFERENCES Stat_Types(id),
+    PRIMARY KEY (tier_id, stat_amount, stat_id, stat_type_id)
 );
 
 CREATE TABLE Main_Stats_to_Raw_Stats(
@@ -92,43 +92,54 @@ CREATE TABLE Main_Stats_to_Raw_Stats(
 
 );
 
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 1, 1);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 2, 1);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 3, 1);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 4, 1);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 5, 1);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 6, 1);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 7, 1);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 8, 1);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 9, 1);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 10, 1);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 11, 1);
-
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 1, 0.2);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 2, 0.2);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 3, 0.2);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 4, 0.2);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 5, 0.2);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 6, 0.2);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 7, 0.2);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 8, 0.2);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 9, 0.2);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 10, 0.2);
-INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 11, 0.2);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 1, 1);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 2, 1);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 3, 1);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 4, 1);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 5, 1);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 6, 1);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 7, 1);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 8, 1);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 9, 1);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 10, 1);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 5, 11, 1);
+--
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 1, 0.2);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 2, 0.2);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 3, 0.2);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 4, 0.2);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 5, 0.2);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 6, 0.2);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 7, 0.2);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 8, 0.2);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 9, 0.2);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 10, 0.2);
+-- INSERT INTO Main_Stats_to_Raw_Stats(main_stat_id, raw_stat_id, class_id, amount) VALUES(1, 6, 11, 0.2);
 CREATE TABLE Items(
-    ID serial PRIMARY KEY,
+    id serial unique,
     item_name VARCHAR(60),
-    essence_value real
+    item_level smallint,
+    essence_value real,
+    PRIMARY KEY (item_name, item_level)
 );
 
 INSERT INTO Stat_Types(stat_type) VALUES('Raw');
 INSERT INTO Stat_Types(stat_type) VALUES('Main');
 
 CREATE TABLE Item_Stats(
-    item_id integer REFERENCES Items(ID),
+    item_id integer REFERENCES Items(id),
     stat_id smallint, -- References either Main_Stats or Main_Stats
-    stat_type smallint REFERENCES Stat_Types(ID),
+    stat_type smallint REFERENCES Stat_Types(id),
+    stat_amount integer,
     PRIMARY KEY (item_id, stat_id, stat_type)
 );
 
+
+CREATE TABLE Item_Stats_Raw(
+    item_id integer REFERENCES Items(ID),
+    stat_id smallint REFERENCES Raw_Stats(ID),
+    PRIMARY KEY (item_id, stat_id)
+);
+
 CREATE INDEX Item_By_ItemID ON Item_Stats(item_id);
+CREATE INDEX Raw_Item_By_ItemID ON Item_Stats_Raw(item_id);
