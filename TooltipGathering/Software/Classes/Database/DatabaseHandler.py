@@ -1,84 +1,100 @@
 import psycopg2
+from Classes.Utils.Utils import StatType
 
 
-def create_insert_query(table_name, table_fields, insertion_values):
-    return f'INSERT INTO {table_name} ({", ".join(table_fields)}) VALUES ({", ".join(str(value) for value in insertion_values)}) ON CONFLICT DO NOTHING'
+# ToDo: Clean this mess up. Probably want to get rid of '*' usage
+def create_insert_query(table_name, table_fields, insertion_values, return_id=False):
+    query = f'INSERT INTO {table_name} ({", ".join(table_fields)}) VALUES({", ".join("%s" for _ in insertion_values)}) ON CONFLICT DO NOTHING'
+
+    if return_id:
+        query += ' RETURNING id'
+
+    return query, insertion_values
+
+
+def get_database():
+    if DatabaseHandler.instance is None:
+        DatabaseHandler()
+    return DatabaseHandler.instance
 
 
 class DatabaseHandler:
+    instance = None
     connection = None
     mappings = None
     essence_values = None
 
     def __init__(self):
+
+        DatabaseHandler.instance = self
         self.connection = self.get_database_connection()
         DatabaseHandler.mappings = self.get_id_mappings()
 
         # ToDo: Hardcoded Essence Tier
         DatabaseHandler.essence_values = self.get_essences(3)
 
-    def execute_select(self, query: str):
+    def execute_select(self, query: str, *params):
         cursor = self.connection.cursor()
         result = None
 
         try:
-            cursor.execute(query)
+            self.connection.rollback()
+            cursor.execute(query, params)
             result = cursor.fetchall()
             print(f"Successfully Fetched!")
 
-        except Exception:
-            print("Error On Select!")
+        except Exception as e:
+            print(f"Error On Select!: {str(e)}")
 
         finally:
             cursor.close()
 
         return result
 
-    def execute_insert(self, query: str, values=None):
+    def execute_insert(self, query: str, *values):
         cursor = self.connection.cursor()
-        inserted_rows = 0
+        returned_value = None
 
         try:
-            cursor.execute(query, values)
+            self.connection.rollback()
+            cursor.execute(query, *values)
             inserted_rows = cursor.rowcount
-            print(f"Successfully Inserted {inserted_rows} Rows")
             self.connection.commit()
+
+            print(f"Successfully Inserted {inserted_rows} Rows")
+            if inserted_rows > 0 and cursor.description:
+                returned_value = cursor.fetchone()[0]
+
         except Exception as e:
             print(f"Error On Insertion!: {str(e)}")
 
         finally:
             cursor.close()
 
-        return inserted_rows > 0
+        return returned_value
 
     def get_database_connection(self):
         database_connection = self.connection
 
         if database_connection is None:
-            database_connection = self.__establish_connection()
-
-        return database_connection
-
-    def __establish_connection(self):
-        database_connection = psycopg2.connect(database="Test", user='Test', password='Test', host='127.0.0.1',
-                                               port='5432')
+            database_connection = psycopg2.connect(database="Test", user='Test', password='Test', host='127.0.0.1',
+                                                   port='5432')
 
         return database_connection
 
     def get_essences(self, essence_tier):
         essence_values = {}
 
-        essences_query = f"""SELECT stat_amount, stat_id, stat_type_id
-        FROM Essences
-        WHERE tier_id = {essence_tier}"""
+        essences_query = f"""SELECT stat_amount, stat_id, stat_type_id FROM Essences WHERE tier_id = {essence_tier}"""
 
         result = self.execute_select(essences_query)
-
         for essence in result:
-            stat_type = self.mappings.get('STAT_TYPES').get(result[2])
-            essence_stat = self.mappings.get(f'{stat_type.upper()}_STATS').get(result[1])
+            stat_type = StatType(essence[2])
+            # Gets Dict Key From Value
+            essence_stat = list(self.mappings.get(f'{stat_type.name}_STATS').keys())[
+                list(self.mappings.get(f'{stat_type.name}_STATS').values()).index(essence[1])]
 
-            essence_tier[essence_stat] = result[0]
+            essence_values[essence_stat] = essence[0]
 
         return essence_values
 

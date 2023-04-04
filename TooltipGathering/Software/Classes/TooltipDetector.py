@@ -9,7 +9,7 @@ import pygetwindow
 import pytesseract
 from PIL import Image
 
-from Classes.Database.DatabaseHandler import DatabaseHandler, create_insert_query
+from Classes.Database.DatabaseHandler import DatabaseHandler, create_insert_query, get_database
 from Classes.Tooltips.ItemTooltip import ItemTooltip
 from Classes.Tooltips.MainStatTooltip import MainStatTooltip
 from Classes.Utils.Rectangle import Rectangle
@@ -20,7 +20,7 @@ class Mode(Enum):
     STATS = 2
 
 
-database = DatabaseHandler()
+database = get_database()
 database_mappings = DatabaseHandler.mappings
 
 TARGET_WINDOW_TITLE = 'The Lord of the Rings Online™'
@@ -204,8 +204,9 @@ def cover_unwanted_icons(image):
     essence_slots_positions = find_rectangles(100, analysis_essences)
     embers_icon_positions = find_rectangles(100, analysis_embers)
 
-    if 255 in equipped_text_borders[10:15, 15:25]:
+    if 255 in equipped_text_borders[5:10, 15:25]:
         image[25:65, 5:40] = 0
+        print('Equipped')
     else:
         image[5:45, 5:40] = 0
 
@@ -262,10 +263,13 @@ def process_item_tooltip(screenshot, tooltip, mode):
         filter(None,
                list(tooltip_text_normal
                     .replace(":", "")
+                    .replace(";", "")
                     .replace("-", "")
                     .split("\n"))))
 
-    item = ItemTooltip(processed_text_normal)
+    item: ItemTooltip = ItemTooltip(processed_text_normal)
+    item.add_to_database()
+
     # human_image.save(f"./Tooltips/Items/{item.name}.jpg")
     # ocr_image.save(f"./Tooltips/Items/{item.name}_ocr.jpg")
 
