@@ -1,5 +1,6 @@
 import sys
 import threading
+import tkinter
 from tkinter import *
 import win32gui
 import win32con
@@ -7,7 +8,9 @@ from PIL import ImageTk, Image
 from time import sleep
 
 
-# https://stackoverflow.com/questions/67544105/click-through-tkinter-windows
+IMAGE = Image.open('Essence_Green.png')
+
+
 def setClickThrough(hwnd):
     print("setting window properties")
     try:
@@ -23,45 +26,56 @@ def setClickThrough(hwnd):
 
 
 class EssenceValueDisplay:
-    def __init__(self, value, position=None):
-        self.value = value
+    def __init__(self):
+        self.root = None
+        self.items = 0
         self.isDisplayed = True
         self.handler = None
+        self.canvas = None
 
-        if position is None:
-            thread = threading.Thread(target=self.construct_window)
-        else:
-            thread = threading.Thread(target=self.construct_window, args=[position])
-
+        # self.construct_window()
+        #
+        # if position is None:
+        #     thread = threading.Thread(target=self.construct_window)
+        # else:
+        thread = threading.Thread(target=self.construct_window)
+        #
         thread.start()
 
     def construct_window(self, position=None):
-        root = Tk()
-        root.geometry(f'+{position[0]}+{position[1]}')
-        root.attributes('-transparentcolor', 'black', '-topmost', 1)
-        root.config(bg='black')
-        root.overrideredirect(True)
+        self.root = Tk()
+        icon = ImageTk.PhotoImage(file='Essence_Green.png')
+        self.root.icon = icon
+        self.root.geometry(f'2560x1440')
+        self.root.attributes('-transparentcolor', 'black', '-topmost', 1)
+        self.root.config(bg='black')
+        self.root.overrideredirect(True)
 
-        canvas = Canvas(root, width=100, height=32, bg='black', highlightthickness=0)
+        self.canvas = Canvas(self.root, width=2560, height=1440, bg='black', highlightthickness=1)
+        setClickThrough(self.canvas.winfo_id())
 
-        setClickThrough(canvas.winfo_id())
-
-        # Get Image
-        image = ImageTk.PhotoImage(file='Essence_Green.png')
-
-        # Render Canvas Contents
-        canvas.create_text(15, 15, text=self.value, fill='white', font='Verdana 12')
-        canvas.create_image(len(str(self.value)) * 5 + 25, 13, image=image)
-        canvas.pack()
+        self.root.after(50, self.add_essence_value_display(10, [100,100]))
+        self.root.after(50, self.add_essence_value_display(30, [300,100]))
+        self.root.after(50, self.add_essence_value_display(40, [400,100]))
+        self.canvas.pack()
 
         # Run for as long as isDisplayed == True
         while self.isDisplayed:
-            root.update()
+            self.root.update()
+
             sleep(1)
 
+    def add_essence_value_display(self, value, position):
+        # Get Image
+        try:
+            print(IMAGE)
 
-sleep(3)
-evd = EssenceValueDisplay(7.5, position=[500, 500])
-sleep(5)
+            # Render Canvas Contents
+            self.canvas.create_text(position[0], position[1], text=value, fill='white', font='Verdana 12')
+            self.canvas.create_image(len(str(value)) * 5 + 25 + position[0], position[1], image=self.root.icon)
+        except Exception as e:
+            print(str(e))
 
-evd.isDisplayed = False
+
+evd = EssenceValueDisplay()
+
