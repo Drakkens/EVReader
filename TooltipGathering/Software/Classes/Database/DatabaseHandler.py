@@ -41,7 +41,7 @@ class DatabaseHandler:
             self.connection.rollback()
             cursor.execute(query, params)
             result = cursor.fetchall()
-            print(f"Successfully Fetched!")
+            # print(f"Successfully Fetched!")
 
         except Exception as e:
             print(f"Error On Select!: {str(e)}")

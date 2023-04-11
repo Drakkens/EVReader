@@ -13,6 +13,9 @@ from Classes.Database.DatabaseHandler import DatabaseHandler, create_insert_quer
 from Classes.Tooltips.ItemTooltip import ItemTooltip
 from Classes.Tooltips.MainStatTooltip import MainStatTooltip
 from Classes.Utils.Rectangle import Rectangle
+from Classes.Utils.Tkinter import get_window_instance
+
+evd = get_window_instance()
 
 
 class Mode(Enum):
@@ -171,6 +174,12 @@ def get_tooltip_image(screenshot, tooltip, ocr=False, mode=None):
     if ocr:
         if mode == Mode.ITEM:
             cover_unwanted_icons(cropped)
+
+            # ToDo: Isolate this, temp fix testing reads
+            hsv_image = cv.cvtColor(cropped, cv.COLOR_BGR2HSV)
+            white_pixels = cv.inRange(hsv_image, (0, 0, 55), (180, 0, 255))
+            cropped[white_pixels > 0] = (0, 255, 0)
+
         if mode == Mode.STATS:
             convert_stat_tooltip_to_ocr(cropped)
 
@@ -253,7 +262,7 @@ def process_stat_tooltip(screenshot, tooltip, mode):
                                                     [main_stat_id, raw_stat_id, class_id, value]))
 
 
-def process_item_tooltip(screenshot, tooltip, mode):
+def process_item_tooltip(screenshot, tooltip, mode, position=None):
     human_image = get_tooltip_image(screenshot, tooltip, False, mode)
     ocr_image = get_tooltip_image(screenshot, tooltip, True, mode)
 
@@ -267,10 +276,13 @@ def process_item_tooltip(screenshot, tooltip, mode):
                     .replace("-", "")
                     .split("\n"))))
 
-    item: ItemTooltip = ItemTooltip(processed_text_normal)
+    item: ItemTooltip = ItemTooltip(processed_text_normal, position)
     item.add_to_database()
 
+    if item not in evd.items:
+        evd.items[item.name + item.item_level] = [item.essence_value, [item.start, item.end]]
+
     # human_image.save(f"./Tooltips/Items/{item.name}.jpg")
-    # ocr_image.save(f"./Tooltips/Items/{item.name}_ocr.jpg")
+    Image.fromarray(ocr_image).save(f"./Tooltips/Items/{item.name}_ocr.jpg")
 
     print(item)

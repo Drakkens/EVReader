@@ -24,3 +24,6 @@ width: {self.width}"""
     @classmethod
     def from_coordinates(cls, x0: int, y0: int, x1: int, y1: int):
         return cls([x0, y0], [x1, y1])
+
+    def get_position(self):
+        return [[self.x0, self.y0], [self.x1, self.y1]]

@@ -7,13 +7,16 @@ database = get_database()
 
 
 class ItemTooltip:
-    def __init__(self, text):
+    def __init__(self, text, position):
         self.text = text
         self.name = self.find_name()
         self.essence_slots = self.find_essence_slots()
         self.item_level, self.item_level_index = self.find_item_level()
         self.stats, self.raw_stats = self.find_item_stats(self.item_level_index)
         self.essence_value = self.get_essence_value()
+        self.start = position[0]
+        self.end = position[1]
+
 
     def __str__(self):
         return f"""Name: {self.name}
