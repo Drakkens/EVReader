@@ -5,6 +5,7 @@ import numpy as np
 from tkinter import *
 import win32gui
 import win32con
+import win32api
 from PIL import ImageTk, Image
 from time import sleep
 
@@ -42,16 +43,17 @@ class EssenceValueDisplay:
         thread.start()
 
     def build_window(self):
+        dimensions = [win32api.GetSystemMetrics(0), win32api.GetSystemMetrics(1)]
+
         self.root = Tk()
         icon = ImageTk.PhotoImage(file='Essence_Green.png')
         self.root.icon = icon
-        self.root.geometry(f'1920x1080')
+        self.root.geometry(f'{dimensions[0]}x{dimensions[1]}')
         self.root.attributes('-transparentcolor', 'black', '-topmost', 1)
         self.root.config(bg='black')
         self.root.overrideredirect(True)
 
-        # ToDo: Hardcoded Dimensions
-        self.canvas = Canvas(self.root, width=1920, height=1080, bg='black', highlightthickness=1)
+        self.canvas = Canvas(self.root, width=dimensions[0], height=dimensions[1], bg='black', highlightthickness=1)
         setClickThrough(self.canvas.winfo_id())
 
         self.canvas.pack()
@@ -63,7 +65,7 @@ class EssenceValueDisplay:
             if self.needs_canvas_update:
                 self.update_canvas()
 
-            sleep(1)
+            sleep(0.5)
 
     def add_essence_value_display(self, value, position):
         # Render Canvas Contents

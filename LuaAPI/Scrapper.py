@@ -47,7 +47,11 @@ def extract_methods(table):
         name = method[1].getText().strip()
         description = method[2].getText().replace("  ", '').strip()
 
-        methods.add(Method(accessor, name, description))
+        # ToDo: Add Annotations for Methods.
+        # Reference: https://github.com/lunarwtr/vscode-lotro-api/blob/main/resources/Lua/EmmyLua/Turbine/Turbine.lua
+        annotations = []
+
+        methods.add(Method(accessor, name, description, annotations))
 
     return methods
 

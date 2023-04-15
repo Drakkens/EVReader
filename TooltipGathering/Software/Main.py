@@ -1,5 +1,5 @@
 import sys
-from time import sleep
+from time import *
 
 from Classes import TooltipDetector
 from Classes.Utils.Tkinter import get_window_instance
@@ -10,7 +10,7 @@ evd = get_window_instance()
 def main(mode):
     try:
         while True:
-            sleep(1)
+            sleep(0.5)
 
             result = TooltipDetector.get_screen_contents()
             if result is not None:
@@ -26,12 +26,16 @@ def main(mode):
                 evd.items = {}
 
                 for tooltip in tooltips:
-                    position = tooltip.get_position()
-                    if mode == TooltipDetector.Mode.ITEM:
-                        TooltipDetector.process_item_tooltip(screenshot, tooltip, mode, position)
+                    start_time = time()
+                    try:
+                        position = tooltip.get_position()
+                        if mode == TooltipDetector.Mode.ITEM:
+                            TooltipDetector.process_item_tooltip(screenshot, tooltip, mode, position)
 
-                    elif mode == TooltipDetector.Mode.STATS:
-                        TooltipDetector.process_stat_tooltip(screenshot, tooltip, mode)
+                        elif mode == TooltipDetector.Mode.STATS:
+                            TooltipDetector.process_stat_tooltip(screenshot, tooltip, mode)
+                    except Exception as e:
+                        print(e)
 
                 evd.needs_canvas_update = evd.check_for_update()
                 print(evd.needs_canvas_update)

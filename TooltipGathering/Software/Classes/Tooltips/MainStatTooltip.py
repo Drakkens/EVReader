@@ -23,13 +23,7 @@ Stats: {self.stats}"""
     def save_image(self, ocr=False):
         if not os.path.isdir(f"{TOOLTIP_DIR}{self.class_name}"):
             os.mkdir(f"{TOOLTIP_DIR}{self.class_name}")
-
-        # ToDo:
-        # if ocr:
-            # self.image.save(f"{TOOLTIP_DIR}{self.class_name}/{self.stat_name}_ocr.jpg")
-        # else:
-            # self.image.save(f"{TOOLTIP_DIR}{self.class_name}/{self.stat_name}.jpg")
-
+            
     def find_class_name(self):
         class_text = self.text[1]
         class_separator = class_text.find(',')

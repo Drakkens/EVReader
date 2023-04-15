@@ -174,12 +174,8 @@ def get_tooltip_image(screenshot, tooltip, ocr=False, mode=None):
     if ocr:
         if mode == Mode.ITEM:
             cover_unwanted_icons(cropped)
-
-            # ToDo: Isolate this, temp fix testing reads
-            hsv_image = cv.cvtColor(cropped, cv.COLOR_BGR2HSV)
-            white_pixels = cv.inRange(hsv_image, (0, 0, 55), (180, 0, 255))
-            cropped[white_pixels > 0] = (0, 255, 0)
-
+            change_white_to_green(cropped)
+            
         if mode == Mode.STATS:
             convert_stat_tooltip_to_ocr(cropped)
 
@@ -226,6 +222,12 @@ def cover_unwanted_icons(image):
         image[essence_slot.y0:essence_slot.y1, essence_slot.x0:essence_slot.x1] = 0
 
 
+def change_white_to_green(cropped):
+    hsv_image = cv.cvtColor(cropped, cv.COLOR_BGR2HSV)
+    white_pixels = cv.inRange(hsv_image, (0, 0, 55), (180, 0, 255))
+    cropped[white_pixels > 0] = (0, 255, 0)
+
+
 def process_stat_tooltip(screenshot, tooltip, mode):
     human_image = get_tooltip_image(screenshot, tooltip, False, mode)
     ocr_image = get_tooltip_image(screenshot, tooltip, True, mode)
@@ -247,9 +249,6 @@ def process_stat_tooltip(screenshot, tooltip, mode):
 
     stat_tooltip: MainStatTooltip = MainStatTooltip(processed_text_normal)
 
-    # ToDo: Fix Signature
-    # stat_tooltip.save_image(Image.fromarray(human_image))
-    # stat_tooltip.save_image(Image.fromarray(ocr_image), True)
     print(stat_tooltip)
 
     for key, value in stat_tooltip.stats.items():

@@ -152,7 +152,11 @@ Essence Value: {self.essence_value}
         for index in range(item_level_index, len(self.text)):
             # Remove All Numbers/Symbols from String. Only Stat Name Remains
             letters_only_text = self.text[index].translate(str.maketrans("", "", "+-*,." + string.digits)).strip()
-            if letters_only_text in STAT_NAMES:
+
+            # ToDo -- High Relevance: Some Items cant hold "Outgoing Healing Rating" in a single line.
+            # Or should fix? Refactor and prettify
+
+            if letters_only_text in STAT_NAMES or (letters_only_text + self.text[index + 1]) in STAT_NAMES:
                 stat = STAT_NAMES[STAT_NAMES.index(letters_only_text)]
                 amount = self.text[index].replace(stat, '').replace('+', '').replace(',', '').strip()
                 stats[stat] = int(amount)
@@ -162,11 +166,14 @@ Essence Value: {self.essence_value}
                     stat_type = StatType.MAIN
                     stat_name_id = DatabaseHandler.mappings.get(f'{stat_type.name}_STATS').get(stat)
 
+                    # ToDo: Plugin Companion, Current Character Class (Or Class Selector)
                     raw_stats = self.convert_main_stat_to_raw_stats('Hunter', stat_name_id, int(amount), raw_stats)
+
                 else:
                     stat_type = StatType.RAW
                     if stat in raw_stats.keys():
                         raw_stats[stat] += int(amount)
+
                     else:
                         raw_stats[stat] = int(amount)
 
