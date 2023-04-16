@@ -8,6 +8,8 @@ from Method import Method
 import Utils
 
 API_DIR = Utils.get_api_directory()
+
+
 def generate_contents():
     for file in os.listdir(API_DIR):
         # Get All Member Files
@@ -27,7 +29,6 @@ def generate_contents():
             extracted_events = []
             if len(events) > 0:
                 extracted_events = extract_methods(events[0])
-
 
             path = str.join("/", package) + "/" + class_name + ".lua"
 
@@ -60,7 +61,8 @@ def write_function(file, method, class_name):
     for line in method.description.splitlines():
         file.write(f'--- {line} \n')
     file.write(f'function {class_name}:{method.name}() \n')
-    file.write(f'end \n' )
+    file.write(f'end \n')
+
 
 def create_file(path, methods, events, class_name):
     file = open(path, 'w')
@@ -74,6 +76,63 @@ def create_file(path, methods, events, class_name):
 
     file.write("return {}".format(class_name))
 
-StructureBuilder.main()
 
-generate_contents()
+# StructureBuilder.main()
+#
+# generate_contents()
+
+
+def create_emmy_lua_intellisense(path, methods):
+    root_file = open(path + "/Turbine.lua", 'w')
+
+    # Class:
+
+    # --- Description
+    # --- @class ClassName/Package
+    # --- @field Accessor SubClassName Description ---> This equals the Classes/SubPackages in a Folder
+    # ClassName/Package = {}
+
+
+def get_file_names_to_ignore(path):
+    root_file = open(path + "/Turbine.lua", 'w')
+
+    file_names = []
+
+    for file in os.listdir(API_DIR):
+        # Get All Member Files
+        if "$Members.html" in file:
+            class_name = file.split("_")[-1:][0].replace("$Members.html", "")
+            package = file.split("_")[:-1]
+
+            contents = open(API_DIR + "/" + file, "r", encoding="UTF-16").read()
+            html_contents = BeautifulSoup(contents, 'html.parser')
+
+            methods = html_contents.find_all(id='MethodsSection')
+            extracted_methods = []
+            if len(methods) > 0:
+                extracted_methods = extract_methods(methods[0])
+
+            events = html_contents.find_all(id='EventsSection')
+            extracted_events = []
+            if len(events) > 0:
+                extracted_events = extract_methods(events[0])
+
+            parent_class = str.join("_", package) + '_' + class_name
+
+            for method in extracted_methods:
+                file_names_to_ignore = f"""{parent_class}_{method.name}.html"""
+                file_names.append(file_names_to_ignore)
+
+            for event in extracted_events:
+                file_names_to_ignore = f"""{parent_class}_{event.name}.html"""
+                file_names.append(file_names_to_ignore)
+
+            root_file.write(file_names_to_ignore)
+    return file_names
+
+
+for file in os.listdir(API_DIR):
+    if '.html' in file:
+        file_classes = get_classes_from_html(file)
+        if file_classes:
+            print(f'{file}: {get_classes_from_html(file)}')
