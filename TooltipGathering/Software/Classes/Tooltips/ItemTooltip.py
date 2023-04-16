@@ -8,6 +8,7 @@ database = get_database()
 
 class ItemTooltip:
     def __init__(self, text, position):
+        print(text)
         self.text = text
         self.name = self.find_name()
         self.essence_slots = self.find_essence_slots()
@@ -16,7 +17,6 @@ class ItemTooltip:
         self.essence_value = self.get_essence_value()
         self.start = position[0]
         self.end = position[1]
-
 
     def __str__(self):
         return f"""Name: {self.name}
@@ -145,19 +145,28 @@ Essence Value: {self.essence_value}
 
         return item_level, index
 
+
+    def remove_unwanted_characters(self, text):
+        return text.translate(str.maketrans("", "", "+-*,." + string.digits)).strip()
+
     def find_item_stats(self, item_level_index):
         stats = {}
         raw_stats = {}
 
         for index in range(item_level_index, len(self.text)):
             # Remove All Numbers/Symbols from String. Only Stat Name Remains
-            letters_only_text = self.text[index].translate(str.maketrans("", "", "+-*,." + string.digits)).strip()
-
+            letters_only_text = self.remove_unwanted_characters(self.text[index])
+            letters_only_text_and_next_row = letters_only_text + ' ' + self.remove_unwanted_characters(self.text[index + 1])
+            print(letters_only_text, letters_only_text_and_next_row)
             # ToDo -- High Relevance: Some Items cant hold "Outgoing Healing Rating" in a single line.
-            # Or should fix? Refactor and prettify
 
-            if letters_only_text in STAT_NAMES or (letters_only_text + self.text[index + 1]) in STAT_NAMES:
+            stat = None
+            if letters_only_text in STAT_NAMES:
                 stat = STAT_NAMES[STAT_NAMES.index(letters_only_text)]
+
+            # elif letters_only_text_and_next_row in STAT_NAMES:
+            #     stat = STAT_NAMES[STAT_NAMES.index(letters_only_text_and_next_row)]
+
                 amount = self.text[index].replace(stat, '').replace('+', '').replace(',', '').strip()
                 stats[stat] = int(amount)
 

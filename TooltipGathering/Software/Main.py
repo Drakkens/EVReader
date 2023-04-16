@@ -26,7 +26,6 @@ def main(mode):
                 evd.items = {}
 
                 for tooltip in tooltips:
-                    start_time = time()
                     try:
                         position = tooltip.get_position()
                         if mode == TooltipDetector.Mode.ITEM:
@@ -35,8 +34,7 @@ def main(mode):
                         elif mode == TooltipDetector.Mode.STATS:
                             TooltipDetector.process_stat_tooltip(screenshot, tooltip, mode)
                     except Exception as e:
-                        print(e)
-
+                        pass
                 evd.needs_canvas_update = evd.check_for_update()
                 print(evd.needs_canvas_update)
 
