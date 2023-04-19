@@ -145,7 +145,6 @@ Essence Value: {self.essence_value}
 
         return item_level, index
 
-
     def remove_unwanted_characters(self, text):
         return text.translate(str.maketrans("", "", "+-*,." + string.digits)).strip()
 
@@ -153,41 +152,43 @@ Essence Value: {self.essence_value}
         stats = {}
         raw_stats = {}
 
+
+        # ToDo: Add Maximum Morale to Raw_Stats. (Formula = (1 / ((Vitality Essence Contrib - Raw_Stat Essence Contrib) / Morale Per Vitality))
         for index in range(item_level_index, len(self.text)):
             # Remove All Numbers/Symbols from String. Only Stat Name Remains
             letters_only_text = self.remove_unwanted_characters(self.text[index])
-            letters_only_text_and_next_row = letters_only_text + ' ' + self.remove_unwanted_characters(self.text[index + 1])
-            print(letters_only_text, letters_only_text_and_next_row)
-            # ToDo -- High Relevance: Some Items cant hold "Outgoing Healing Rating" in a single line.
+            letters_only_text_and_next_row = letters_only_text + ' ' + self.remove_unwanted_characters(
+                self.text[index + 1])
 
-            stat = None
             if letters_only_text in STAT_NAMES:
                 stat = STAT_NAMES[STAT_NAMES.index(letters_only_text)]
 
-            # elif letters_only_text_and_next_row in STAT_NAMES:
-            #     stat = STAT_NAMES[STAT_NAMES.index(letters_only_text_and_next_row)]
+            elif letters_only_text_and_next_row in STAT_NAMES:
+                stat = STAT_NAMES[STAT_NAMES.index(letters_only_text_and_next_row)]
 
-                amount = self.text[index].replace(stat, '').replace('+', '').replace(',', '').strip()
-                stats[stat] = int(amount)
+            else:
+                # ToDo: Same issue as described in get_essence_slots
+                if "ESSENCE" in self.text[index] or "EMPTY SLOT" in self.text[index]:
+                    break
+                continue
 
-                # Vit Treated as Raw Stat
-                if stat in DatabaseHandler.mappings.get("MAIN_STATS") and stat != 'Vitality':
-                    stat_type = StatType.MAIN
-                    stat_name_id = DatabaseHandler.mappings.get(f'{stat_type.name}_STATS').get(stat)
+            amount = self.text[index].replace(letters_only_text, '').replace('+', '').replace(',', '').strip()
+            stats[stat] = int(amount)
 
-                    # ToDo: Plugin Companion, Current Character Class (Or Class Selector)
-                    raw_stats = self.convert_main_stat_to_raw_stats('Hunter', stat_name_id, int(amount), raw_stats)
+            # Vit Treated as Raw Stat
+            if stat in DatabaseHandler.mappings.get("MAIN_STATS") and stat != 'Vitality':
+                stat_type = StatType.MAIN
+                stat_name_id = DatabaseHandler.mappings.get(f'{stat_type.name}_STATS').get(stat)
+
+                # ToDo: Plugin Companion, Current Character Class (Or Class Selector)
+                raw_stats = self.convert_main_stat_to_raw_stats('Hunter', stat_name_id, int(amount), raw_stats)
+
+            else:
+                stat_type = StatType.RAW
+                if stat in raw_stats.keys():
+                    raw_stats[stat] += int(amount)
 
                 else:
-                    stat_type = StatType.RAW
-                    if stat in raw_stats.keys():
-                        raw_stats[stat] += int(amount)
-
-                    else:
-                        raw_stats[stat] = int(amount)
-
-            # ToDo: Same issue as described in get_essence_slots 
-            if "ESSENCE" in self.text[index] or "EMPTY SLOT" in self.text[index]:
-                break
+                    raw_stats[stat] = int(amount)
 
         return stats, raw_stats
