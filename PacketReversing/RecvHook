@@ -1,0 +1,7 @@
+lotroclient64 base = 00007FF6726B0000
+
+RecvFrom RVA = 1124A4F
+
+GuidedHacking Decrypt Hook = 00F6CC81 -> Seems to not even get hit by breakpoints at all
+
+Interesting shit = 117D430, 117D81D

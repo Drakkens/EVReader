@@ -34,7 +34,7 @@ def main(mode):
                         elif mode == TooltipDetector.Mode.STATS:
                             TooltipDetector.process_stat_tooltip(screenshot, tooltip, mode)
                     except Exception as e:
-                        pass
+                        print(e)
                 evd.needs_canvas_update = evd.check_for_update()
                 print(evd.needs_canvas_update)
 
