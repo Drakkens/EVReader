@@ -1,4 +1,5 @@
 import string
+import sys
 
 from Classes.Database.DatabaseHandler import DatabaseHandler, get_database, create_insert_query
 from Classes.Utils.Utils import STAT_NAMES, StatType, EssenceTiers140
@@ -8,7 +9,6 @@ database = get_database()
 
 class ItemTooltip:
     def __init__(self, text, position):
-        print(text)
         self.text = text
         self.name = self.find_name()
         self.essence_slots = self.find_essence_slots()
@@ -151,44 +151,42 @@ Essence Value: {self.essence_value}
     def find_item_stats(self, item_level_index):
         stats = {}
         raw_stats = {}
-
-
+        try:
         # ToDo: Add Maximum Morale to Raw_Stats. (Formula = (1 / ((Vitality Essence Contrib - Raw_Stat Essence Contrib) / Morale Per Vitality))
-        for index in range(item_level_index, len(self.text)):
-            # Remove All Numbers/Symbols from String. Only Stat Name Remains
-            letters_only_text = self.remove_unwanted_characters(self.text[index])
-            letters_only_text_and_next_row = letters_only_text + ' ' + self.remove_unwanted_characters(
-                self.text[index + 1])
+            for index in range(item_level_index, len(self.text)):
+                # Remove All Numbers/Symbols from String. Only Stat Name Remains
+                letters_only_text = self.remove_unwanted_characters(self.text[index])
+                letters_only_text_and_next_row = letters_only_text + ' ' + self.remove_unwanted_characters(
+                    self.text[index + 1])
+                if letters_only_text in STAT_NAMES:
+                    stat = STAT_NAMES[STAT_NAMES.index(letters_only_text)]
 
-            if letters_only_text in STAT_NAMES:
-                stat = STAT_NAMES[STAT_NAMES.index(letters_only_text)]
-
-            elif letters_only_text_and_next_row in STAT_NAMES:
-                stat = STAT_NAMES[STAT_NAMES.index(letters_only_text_and_next_row)]
-
-            else:
-                # ToDo: Same issue as described in get_essence_slots
-                if "ESSENCE" in self.text[index] or "EMPTY SLOT" in self.text[index]:
-                    break
-                continue
-
-            amount = self.text[index].replace(letters_only_text, '').replace('+', '').replace(',', '').strip()
-            stats[stat] = int(amount)
-
-            # Vit Treated as Raw Stat
-            if stat in DatabaseHandler.mappings.get("MAIN_STATS") and stat != 'Vitality':
-                stat_type = StatType.MAIN
-                stat_name_id = DatabaseHandler.mappings.get(f'{stat_type.name}_STATS').get(stat)
-
-                # ToDo: Plugin Companion, Current Character Class (Or Class Selector)
-                raw_stats = self.convert_main_stat_to_raw_stats('Hunter', stat_name_id, int(amount), raw_stats)
-
-            else:
-                stat_type = StatType.RAW
-                if stat in raw_stats.keys():
-                    raw_stats[stat] += int(amount)
+                elif letters_only_text_and_next_row in STAT_NAMES:
+                    stat = STAT_NAMES[STAT_NAMES.index(letters_only_text_and_next_row)]
 
                 else:
-                    raw_stats[stat] = int(amount)
+                    # ToDo: Same issue as described in get_essence_slots
+                    if "ESSENCE" in self.text[index] or "EMPTY SLOT" in self.text[index] or "Durability" in self.text[index]:
+                        break
+                    continue
+                amount = self.text[index].replace(letters_only_text, '').replace('+', '').replace(',', '').strip()
+                stats[stat] = int(amount)
+                # Vit Treated as Raw Stat
+                if stat in DatabaseHandler.mappings.get("MAIN_STATS") and stat != 'Vitality':
+                    stat_type = StatType.MAIN
+                    stat_name_id = DatabaseHandler.mappings.get(f'{stat_type.name}_STATS').get(stat)
+
+                    # ToDo: Plugin Companion, Current Character Class (Or Class Selector)
+                    raw_stats = self.convert_main_stat_to_raw_stats('Beorning', stat_name_id, int(amount), raw_stats)
+
+                else:
+                    stat_type = StatType.RAW
+                    if stat in raw_stats.keys():
+                        raw_stats[stat] += int(amount)
+
+                    else:
+                        raw_stats[stat] = int(amount)
+        except Exception as e:
+            print(f'Item Exception: {e, sys.exc_info()[2].tb_lineno}')
 
         return stats, raw_stats
