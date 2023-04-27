@@ -41,3 +41,7 @@ class EssenceTiers140(Enum):
     LIVELY_DELVERS = 3
     VIVID_DELVERS = 4
 
+
+def get_key_from_dictionary(dictionary, value):
+    return list(dictionary.keys())[
+        list(dictionary.values()).index(value)]
