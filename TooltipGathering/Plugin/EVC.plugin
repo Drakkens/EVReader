@@ -4,6 +4,8 @@
   <Name>EVC</Name>
   <Author>Drakkens</Author>
   <Version>1.00</Version>
+  <Image>Drakkens/EVC/Resources/Essence_Green.tga</Image>
  </Information>
  <Package>Drakkens.EVC.Main</Package>
+ <Configuration Apartment="EVC" />
 </Plugin>

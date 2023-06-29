@@ -185,3 +185,18 @@ INSERT INTO "main_stats_to_raw_stats" ("main_stat_id", "raw_stat_id", "class_id"
 (6,	6,	11,	1),
 (6,	13,	11,	1),
 (6,	2,	11,	1);
+
+
+INSERT INTO "main_stats_to_raw_stats" ("main_stat_id", "raw_stat_id", "class_id", "amount") VALUES
+(4, 14, 1, 4.8),
+(4, 14, 2, 4.5),
+(4, 14, 3, 5),
+(4, 14, 4, 4.5),
+(4, 14, 5, 4.5),
+(4, 14, 6, 4.8),
+(4, 14, 7, 4),
+(4, 14, 8, 4),
+(4, 14, 9, 4),
+(4, 14, 10, 4),
+(4, 14, 11, 4.8);
+

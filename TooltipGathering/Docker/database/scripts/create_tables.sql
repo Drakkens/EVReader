@@ -57,6 +57,7 @@ INSERT INTO Raw_Stats(stat_name) VALUES('Evade Rating');
 INSERT INTO Raw_Stats(stat_name) VALUES('Outgoing Healing Rating');
 INSERT INTO Raw_Stats(stat_name) VALUES('Incoming Healing Rating');
 INSERT INTO Raw_Stats(stat_name) VALUES('Resistance Rating');
+INSERT INTO Raw_Stats(stat_name) VALUES('Maximum Morale');
 
 
 CREATE TABLE Stat_Types(

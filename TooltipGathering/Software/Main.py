@@ -3,12 +3,8 @@ from time import *
 
 from Classes import TooltipDetector
 from Classes.Utils.Tkinter import get_window_instance
-from Classes.Database.Utils import calculate_morale_essence_value
-
-calculate_morale_essence_value()
 
 evd = get_window_instance()
-
 
 def main(mode):
     try:
