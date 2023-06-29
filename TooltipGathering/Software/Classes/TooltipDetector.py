@@ -117,7 +117,6 @@ def get_screen_contents():
         # Use with Custom Skin
         canny = cv.Canny(image, 1450, 750)
         analysis = cv.connectedComponentsWithStats(canny, 4, cv.CV_32S)
-
         return screenshot, analysis
 
 

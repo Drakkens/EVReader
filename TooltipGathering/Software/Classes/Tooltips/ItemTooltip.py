@@ -2,9 +2,14 @@ import string
 import sys
 
 from Classes.Database.DatabaseHandler import DatabaseHandler, get_database, create_insert_query
-from Classes.Utils.Utils import STAT_NAMES, StatType, EssenceTiers140
+from Classes.Utils.Utils import STAT_NAMES, StatType, EssenceTiers140, get_essence_weight, CURRENT_CLASS
+from Classes.Database.Utils import calculate_morale_essence_value
 
 database = get_database()
+
+
+def remove_unwanted_characters(text):
+    return text.translate(str.maketrans("", "", "+-*,." + string.digits)).strip()
 
 
 class ItemTooltip:
@@ -17,7 +22,6 @@ class ItemTooltip:
         self.essence_value = self.get_essence_value()
         self.start = position[0]
         self.end = position[1]
-
     def __str__(self):
         return f"""Name: {self.name}
 Item Level: {self.item_level}
@@ -101,9 +105,14 @@ Essence Value: {self.essence_value}
     def get_essence_value(self):
         total_essence_slices = 0
         for stat_name, amount in self.raw_stats.items():
+            if stat_name != 'Maximum Morale':
+                essence_value = DatabaseHandler.essence_values.get(stat_name)
+            else:
+                essence_value = calculate_morale_essence_value.get(CURRENT_CLASS)
+
             # ToDo: Weights, User Input
-            essence_value = DatabaseHandler.essence_values.get(stat_name)
-            total_essence_slices += round(amount / essence_value, 4)
+            print(stat_name)
+            total_essence_slices += round(amount / essence_value * get_essence_weight(stat_name), 4)
 
         return round(total_essence_slices + self.essence_slots, 4)
 
@@ -122,7 +131,7 @@ Essence Value: {self.essence_value}
         if "Equipped" in self.text[0]:
             name = name[1:]
 
-        return ' '.join(name).title() or None
+        return ' '.join(name).title()
 
     def find_essence_slots(self):
         amount_of_slots = 0
@@ -145,18 +154,15 @@ Essence Value: {self.essence_value}
 
         return item_level, index
 
-    def remove_unwanted_characters(self, text):
-        return text.translate(str.maketrans("", "", "+-*,." + string.digits)).strip()
-
     def find_item_stats(self, item_level_index):
         stats = {}
         raw_stats = {}
         try:
-        # ToDo: Add Maximum Morale to Raw_Stats. (Formula = (1 / ((Vitality Essence Contrib - Raw_Stat Essence Contrib) / Morale Per Vitality))
             for index in range(item_level_index, len(self.text)):
+                # ToDo: Clean Up
                 # Remove All Numbers/Symbols from String. Only Stat Name Remains
-                letters_only_text = self.remove_unwanted_characters(self.text[index])
-                letters_only_text_and_next_row = letters_only_text + ' ' + self.remove_unwanted_characters(
+                letters_only_text = remove_unwanted_characters(self.text[index])
+                letters_only_text_and_next_row = letters_only_text + ' ' + remove_unwanted_characters(
                     self.text[index + 1])
                 if letters_only_text in STAT_NAMES:
                     stat = STAT_NAMES[STAT_NAMES.index(letters_only_text)]
@@ -169,6 +175,7 @@ Essence Value: {self.essence_value}
                     if "ESSENCE" in self.text[index] or "EMPTY SLOT" in self.text[index] or "Durability" in self.text[index]:
                         break
                     continue
+
                 amount = self.text[index].replace(letters_only_text, '').replace('+', '').replace(',', '').strip()
                 stats[stat] = int(amount)
                 # Vit Treated as Raw Stat
