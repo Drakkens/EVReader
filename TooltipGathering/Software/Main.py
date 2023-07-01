@@ -3,13 +3,15 @@ from time import *
 
 from Classes import TooltipDetector
 from Classes.Utils.Tkinter import get_window_instance
-
+from Classes.Utils.Utils import calculate_morale_essence_value
 
 
 def main(mode):
     try:
         while True:
             sleep(0.5)
+
+            print(calculate_morale_essence_value())
 
             result = TooltipDetector.get_screen_contents()
             if result is not None:

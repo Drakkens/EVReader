@@ -9,7 +9,6 @@ import pygetwindow
 import pytesseract
 from PIL import Image
 
-from Classes.Database.DatabaseHandler import DatabaseHandler, create_insert_query, get_database
 from Classes.Tooltips.ItemTooltip import ItemTooltip
 from Classes.Tooltips.MainStatTooltip import MainStatTooltip
 from Classes.Utils.Rectangle import Rectangle
@@ -18,9 +17,6 @@ class Mode(Enum):
     ITEM = 1
     STATS = 2
 
-
-database = get_database()
-database_mappings = DatabaseHandler.mappings
 
 TARGET_WINDOW_TITLE = 'The Lord of the Rings Online™'
 TESSERACT_CONFIG = "--oem 3, --psm 11"
@@ -246,16 +242,6 @@ def process_stat_tooltip(screenshot, tooltip, mode):
 
     print(stat_tooltip)
 
-    for key, value in stat_tooltip.stats.items():
-        main_stat_id = database_mappings.get("MAIN_STATS").get(stat_tooltip.stat_name)
-        raw_stat_id = database_mappings.get("RAW_STATS").get(key)
-        class_id = database_mappings.get("CLASSES").get(stat_tooltip.class_name)
-
-        database.execute_insert(create_insert_query("Main_Stats_to_Raw_Stats",
-                                                    ["main_stat_id", "raw_stat_id", "class_id", "amount"],
-                                                    [main_stat_id, raw_stat_id, class_id, value]))
-
-
 def process_item_tooltip(screenshot, tooltip, mode, position=None):
     human_image = get_tooltip_image(screenshot, tooltip, False, mode)
     ocr_image = get_tooltip_image(screenshot, tooltip, True, mode)
@@ -271,7 +257,6 @@ def process_item_tooltip(screenshot, tooltip, mode, position=None):
                     .split("\n"))))
 
     item: ItemTooltip = ItemTooltip(processed_text_normal, position)
-    item.add_to_database()
 
     if item not in get_window_instance().items:
         get_window_instance().items[item.name + item.item_level] = [item.essence_value, [item.start, item.end]]

@@ -1,11 +1,11 @@
 import string
 import sys
 
-from Classes.Database.DatabaseHandler import DatabaseHandler, get_database, create_insert_query
-from Classes.Utils.Utils import STAT_NAMES, StatType, EssenceTiers140, get_essence_weight, CURRENT_CLASS
-from Classes.Database.Utils import calculate_morale_essence_value
-
-database = get_database()
+from Classes.Utils.Utils import STAT_NAMES, StatType, EssenceTiers140, get_essence_weight, CURRENT_CLASS, CHOOSEN_ESSENCE_TIER
+from Classes.Utils.Utils import calculate_morale_essence_value
+from Classes.Data.Essences import *
+from Classes.Data.Stats import *
+from Classes.Data.Classes import *
 
 
 def remove_unwanted_characters(text):
@@ -22,6 +22,7 @@ class ItemTooltip:
         self.essence_value = self.get_essence_value()
         self.start = position[0]
         self.end = position[1]
+
     def __str__(self):
         return f"""Name: {self.name}
 Item Level: {self.item_level}
@@ -31,74 +32,17 @@ Raw Stats: {self.raw_stats}
 Essence Value: {self.essence_value}
 """
 
-    def add_to_database(self):
-        if "ESSENCE OF" in self.name:
-            split_name = self.name.split(" ")
-            tier_separator_index = split_name.index('ESSENCE')
-            essence_tier = EssenceTiers140[str.join("_", split_name[:tier_separator_index]).replace('\'', "")].value
-            stat_name = str.join(' ', split_name[tier_separator_index + 2:]).title()
-
-            if stat_name in DatabaseHandler.mappings.get("MAIN_STATS"):
-                stat_type = StatType.MAIN
-                stat_amount = self.stats[stat_name]
-
-            else:
-                stat_type = StatType.RAW
-                # Some essences dont share stat name
-                if stat_name == 'Evasion':
-                    stat_name = 'Evade'
-
-                if stat_name == 'Healing':
-                    stat_name = 'Outgoing Healing'
-
-                if stat_name == 'Restoration':
-                    stat_name = 'Incoming Healing'
-
-                if stat_name not in self.raw_stats.keys():
-                    stat_name += ' Rating'
-                stat_amount = self.raw_stats[stat_name]
-
-            stat_id = DatabaseHandler.mappings.get(f"{stat_type.name}_STATS").get(stat_name)
-            stat_type_id = stat_type.value
-            database.execute_insert(*create_insert_query('ESSENCES',
-                                                         ['tier_id', 'stat_amount', 'stat_id', 'stat_type_id'],
-                                                         [essence_tier, stat_amount, stat_id, stat_type_id]))
-
-        else:
-            item_id = database.execute_insert(*create_insert_query("ITEMS",
-                                                                   ["item_name", "item_level", "essence_value"],
-                                                                   [self.name, self.item_level, self.essence_value],
-                                                                   True
-                                                                   ))
-            if item_id is not None and item_id != 0:
-                for stat_name, stat_value in self.stats.items():
-                    if stat_name in DatabaseHandler.mappings.get(f'MAIN_STATS'):
-                        stat_type = StatType.MAIN
-                    else:
-                        stat_type = StatType.RAW
-
-                    stat_name_id = DatabaseHandler.mappings.get(f'{stat_type.name}_STATS').get(stat_name)
-                    stat_type_id = stat_type.value
-                    database.execute_insert(*create_insert_query("ITEM_STATS",
-                                                                 ['item_id', 'stat_id', 'stat_type', 'stat_amount'],
-                                                                 [item_id, stat_name_id, stat_type_id,
-                                                                  stat_value]))
-
-    def convert_main_stat_to_raw_stats(self, class_name, main_stat_id, main_stat_amount, raw_stats):
-        class_id = database.execute_select("SELECT id FROM classes WHERE class_name LIKE %s", class_name)[0]
-        raw_stat_query = "SELECT raw_stat_id, amount FROM Main_Stats_To_Raw_Stats WHERE class_id = %s AND main_stat_id = %s"
-
-        main_stat_to_raw_stats = database.execute_select(raw_stat_query, class_id, main_stat_id)
+    def convert_main_stat_to_raw_stats(self, class_name, main_stat_name, main_stat_amount, raw_stats):
+        main_stat_to_raw_stats = globals()[class_name + "_STATS"].get(main_stat_name)
         for values in main_stat_to_raw_stats:
-            # Gets Dict Key From Value
+            for value in values:
+                raw_stat_name = value[0]
+                raw_stat_amount_per_main_stat_point = value[1]
 
-            raw_stat_name = list(DatabaseHandler.mappings.get('RAW_STATS').keys())[
-                list(DatabaseHandler.mappings.get('RAW_STATS').values()).index(values[0])]
-
-            if raw_stat_name in raw_stats.keys():
-                raw_stats[raw_stat_name] += values[1] * main_stat_amount
-            else:
-                raw_stats[raw_stat_name] = values[1] * main_stat_amount
+                if raw_stat_name in raw_stats.keys():
+                    raw_stats[raw_stat_name] += raw_stat_amount_per_main_stat_point[1] * main_stat_amount
+                else:
+                    raw_stats[raw_stat_name] = raw_stat_amount_per_main_stat_point[1] * main_stat_amount
 
         return raw_stats
 
@@ -106,11 +50,10 @@ Essence Value: {self.essence_value}
         total_essence_slices = 0
         for stat_name, amount in self.raw_stats.items():
             if stat_name != 'Maximum Morale':
-                essence_value = DatabaseHandler.essence_values.get(stat_name)
+                essence_value = EssenceTiers140['TIER' + CHOOSEN_ESSENCE_TIER].get(stat_name)
             else:
-                essence_value = calculate_morale_essence_value.get(CURRENT_CLASS)
+                essence_value = calculate_morale_essence_value().get(CURRENT_CLASS)
 
-            # ToDo: Weights, User Input
             print(stat_name)
             total_essence_slices += round(amount / essence_value * get_essence_weight(stat_name), 4)
 
@@ -179,15 +122,12 @@ Essence Value: {self.essence_value}
                 amount = self.text[index].replace(letters_only_text, '').replace('+', '').replace(',', '').strip()
                 stats[stat] = int(amount)
                 # Vit Treated as Raw Stat
-                if stat in DatabaseHandler.mappings.get("MAIN_STATS") and stat != 'Vitality':
-                    stat_type = StatType.MAIN
-                    stat_name_id = DatabaseHandler.mappings.get(f'{stat_type.name}_STATS').get(stat)
 
+                if stat in MAIN_STATS and stat != 'Vitality':
                     # ToDo: Plugin Companion, Current Character Class (Or Class Selector)
-                    raw_stats = self.convert_main_stat_to_raw_stats('Beorning', stat_name_id, int(amount), raw_stats)
+                    raw_stats = self.convert_main_stat_to_raw_stats(CURRENT_CLASS, stat, int(amount), raw_stats)
 
                 else:
-                    stat_type = StatType.RAW
                     if stat in raw_stats.keys():
                         raw_stats[stat] += int(amount)
 
