@@ -33,8 +33,9 @@ def calculate_morale_essence_value(essence_tier=3):
         morale_per_vitality_point_query = f"SELECT cs.amount FROM main_stats_to_raw_stats cs WHERE class_id = {class_id} AND raw_stat_id = 14"
         morale_per_vitality_point = database.execute_select(morale_per_vitality_point_query)[0][0]
 
-        morale_per_vitality_essence = morale_per_vitality_point * DatabaseHandler.essence_values.get('Vitality')
+        essence_per_morale_point = vitality_morale_contribution / (DatabaseHandler.essence_values.get('Vitality') * morale_per_vitality_point)
+        morale_per_one_essence = 1 / essence_per_morale_point
 
-        essence_values_per_class[class_id] = morale_per_vitality_essence
+        essence_values_per_class[class_name] = round(morale_per_one_essence)
 
     return essence_values_per_class
