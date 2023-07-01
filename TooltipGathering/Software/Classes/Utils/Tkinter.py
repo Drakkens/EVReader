@@ -3,6 +3,8 @@ import threading
 
 import numpy as np
 from tkinter import *
+
+import pygetwindow
 import win32gui
 import win32con
 import win32api
@@ -10,6 +12,7 @@ from PIL import ImageTk, Image
 from time import sleep
 
 IMAGE = Image.open('Essence_Green.png')
+TARGET_WINDOW_TITLE = 'The Lord of the Rings Online™'
 
 
 def setClickThrough(hwnd):
@@ -61,11 +64,18 @@ class EssenceValueDisplay:
         # Run for as long as isDisplayed == True
         while self.isDisplayed:
             self.root.update()
-            
+
             if self.needs_canvas_update:
                 self.update_canvas()
 
-            sleep(0.5)
+            focused_window = pygetwindow.getActiveWindowTitle()
+
+            if focused_window != TARGET_WINDOW_TITLE:
+                self.isDisplayed = False
+                self.root.destroy()
+                EssenceValueDisplay.display = None
+
+            sleep(0.1)
 
     def add_essence_value_display(self, value, position):
         # Render Canvas Contents
@@ -85,7 +95,7 @@ class EssenceValueDisplay:
             
             self.add_essence_value_display(values[0], position)
         self.needs_canvas_update = False
-        
+
     def check_for_update(self):
         print(self.items, self.old_items)
         for item in self.items:
