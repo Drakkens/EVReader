@@ -15,8 +15,6 @@ from Classes.Tooltips.MainStatTooltip import MainStatTooltip
 from Classes.Utils.Rectangle import Rectangle
 from Classes.Utils.Tkinter import get_window_instance
 
-evd = get_window_instance()
-
 
 class Mode(Enum):
     ITEM = 1
@@ -277,8 +275,8 @@ def process_item_tooltip(screenshot, tooltip, mode, position=None):
     item: ItemTooltip = ItemTooltip(processed_text_normal, position)
     item.add_to_database()
 
-    if item not in evd.items:
-        evd.items[item.name + item.item_level] = [item.essence_value, [item.start, item.end]]
+    if item not in get_window_instance().items:
+        get_window_instance().items[item.name + item.item_level] = [item.essence_value, [item.start, item.end]]
 
     # human_image.save(f"./Tooltips/Items/{item.name}.jpg")
     Image.fromarray(ocr_image).save(f"./Tooltips/Items/{item.name}_ocr.jpg")
