@@ -34,15 +34,13 @@ Essence Value: {self.essence_value}
 
     def convert_main_stat_to_raw_stats(self, class_name, main_stat_name, main_stat_amount, raw_stats):
         main_stat_to_raw_stats = globals()[class_name + "_STATS"].get(main_stat_name)
-        for values in main_stat_to_raw_stats:
-            for value in values:
-                raw_stat_name = value[0]
-                raw_stat_amount_per_main_stat_point = value[1]
 
-                if raw_stat_name in raw_stats.keys():
-                    raw_stats[raw_stat_name] += raw_stat_amount_per_main_stat_point[1] * main_stat_amount
-                else:
-                    raw_stats[raw_stat_name] = raw_stat_amount_per_main_stat_point[1] * main_stat_amount
+        for raw_stat_name, raw_stat_amount_per_main_stat_point in main_stat_to_raw_stats.items():
+
+            if raw_stat_name in raw_stats.keys():
+                raw_stats[raw_stat_name] += raw_stat_amount_per_main_stat_point * main_stat_amount
+            else:
+                raw_stats[raw_stat_name] = raw_stat_amount_per_main_stat_point * main_stat_amount
 
         return raw_stats
 
