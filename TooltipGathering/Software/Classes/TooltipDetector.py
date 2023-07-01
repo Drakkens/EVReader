@@ -13,6 +13,8 @@ from Classes.Tooltips.ItemTooltip import ItemTooltip
 from Classes.Tooltips.MainStatTooltip import MainStatTooltip
 from Classes.Utils.Rectangle import Rectangle
 from Classes.Utils.Tkinter import get_window_instance
+
+
 class Mode(Enum):
     ITEM = 1
     STATS = 2
