@@ -12,7 +12,6 @@ def main(mode):
         while True:
             sleep(0.5)
 
-            print(calculate_morale_essence_value())
 
             result = TooltipDetector.get_screen_contents()
             if result is not None:
