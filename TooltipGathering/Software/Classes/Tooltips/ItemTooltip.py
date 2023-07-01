@@ -50,7 +50,7 @@ Essence Value: {self.essence_value}
         total_essence_slices = 0
         for stat_name, amount in self.raw_stats.items():
             if stat_name != 'Maximum Morale':
-                essence_value = EssenceTiers140['TIER' + CHOOSEN_ESSENCE_TIER].get(stat_name)
+                essence_value = EssenceTiers140['TIER' + str(CHOOSEN_ESSENCE_TIER)].value.get(stat_name)
             else:
                 essence_value = calculate_morale_essence_value().get(CURRENT_CLASS)
 

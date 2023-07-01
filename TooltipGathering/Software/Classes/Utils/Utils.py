@@ -3,6 +3,8 @@ from Classes.Data.Essences import *
 from Classes.Data.Stats import *
 from Classes.Data.Classes import *
 
+
+#ToDo: Move to Essences
 def calculate_morale_essence_value(essence_tier=3):
     essence_values_per_class = {}
 
@@ -28,9 +30,11 @@ def calculate_morale_essence_value(essence_tier=3):
             vitality_morale_contribution -= essence_slice_value
 
         morale_per_vitality_point = globals()[class_name+"_STATS"].get('Vitality').get('Maximum Morale')
-        morale_per_vitality_essence = morale_per_vitality_point * EssenceTiers140["TIER"+str(essence_tier)].value.get('Vitality')
 
-        essence_values_per_class[class_name] = morale_per_vitality_essence
+        essence_per_morale_point = vitality_morale_contribution / (EssenceTiers140["TIER"+str(essence_tier)].value.get('Vitality') * morale_per_vitality_point)
+        morale_per_one_essence = 1 / essence_per_morale_point
+
+        essence_values_per_class[class_name] = round(morale_per_one_essence)
 
     return essence_values_per_class
 
@@ -76,7 +80,7 @@ def get_key_from_dictionary(dictionary, value):
 
 
 # ToDo: Parser (Name, Not ID)
-CURRENT_CLASS = "Beorning"
+CURRENT_CLASS = "Beorning".upper()
 
 essence_weights = {"Maximum Morale": 1,
                    "Vitality": 1,
