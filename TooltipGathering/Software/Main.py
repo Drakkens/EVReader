@@ -4,7 +4,7 @@ from time import *
 from Classes import TooltipDetector
 from Classes.Utils.Tkinter import get_window_instance
 
-evd = get_window_instance()
+
 
 def main(mode):
     try:
@@ -19,10 +19,10 @@ def main(mode):
                 # Tooltips before this scan.
                 # Goal is to Update_Canvas whenever Old Tooltips differs to New Tooltips
                 # If both are equal, don't update.
-                evd.old_items = evd.items.copy()
+                get_window_instance().old_items = get_window_instance().items.copy()
 
                 # Reset evd.items
-                evd.items = {}
+                get_window_instance().items = {}
 
                 for tooltip in tooltips:
                     try:
@@ -34,12 +34,12 @@ def main(mode):
                             TooltipDetector.process_stat_tooltip(screenshot, tooltip, mode)
                     except Exception as e:
                         print(e)
-                evd.needs_canvas_update = evd.check_for_update()
-                print(evd.needs_canvas_update)
+                get_window_instance().needs_canvas_update = get_window_instance().check_for_update()
+                print(get_window_instance().needs_canvas_update)
 
     except KeyboardInterrupt:
         print("Exiting...")
-        evd.isDisplayed = False
+        get_window_instance().isDisplayed = False
         sys.exit(130)
 
 
