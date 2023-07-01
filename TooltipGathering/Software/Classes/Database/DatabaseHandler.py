@@ -95,7 +95,7 @@ class DatabaseHandler:
                 list(self.mappings.get(f'{stat_type.name}_STATS').values()).index(essence[1])]
 
             essence_values[essence_stat] = essence[0]
-
+        print(essence_values)
         return essence_values
 
     def get_id_mappings(self):
