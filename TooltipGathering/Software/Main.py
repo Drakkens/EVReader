@@ -33,7 +33,8 @@ def main(mode):
                         elif mode == TooltipDetector.Mode.STATS:
                             TooltipDetector.process_stat_tooltip(screenshot, tooltip, mode)
                     except Exception as e:
-                        print(e)
+                        print(f'Main Exception: {e, sys.exc_info()[2].tb_lineno}')
+
                 get_window_instance().needs_canvas_update = get_window_instance().check_for_update()
                 print(get_window_instance().needs_canvas_update)
 

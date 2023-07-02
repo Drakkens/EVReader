@@ -28,9 +28,9 @@ function drawOptions()
     dropDown:SetAlignment(Turbine.UI.ContentAlignment.MiddleLeft);
     dropDown:SetVisible(true)
 
-    dropDown.ItemChanged = function(sender, args)
-        class_id = args.Index;
-    end
+    --dropDown.ItemChanged = function(sender, args)
+    --    class_id = args.Index;
+    --end
 
     drawEssenceWeights(options)
 
@@ -80,7 +80,9 @@ function drawEssenceWeights(options)
     configScreen = Turbine.UI.Control();
     configScreen:SetSize(1000, 1000);
     statReferences = {};
-    local essenceList = { 'Critical Rating',
+    local essenceList = { 'Maximum Morale',
+                          'Vitality',
+                          'Critical Rating',
                           'Finesse Rating',
                           'Physical Mastery Rating',
                           'Tactical Mastery Rating',
@@ -95,12 +97,44 @@ function drawEssenceWeights(options)
                           'Resistance Rating' };
 
     for key, value in pairs(essenceList) do
-        --Turbine.Shell.WriteLine(key, value);
         local textBox = createEssenceWeightControls(value, options, key);
         statReferences[value] = textBox;
 
     end
 end
+
+function createCommands()
+    if (dropDown:GetText() == 'Select Class') then
+        Turbine.Shell.WriteLine('Returned');
+        return;
+    end
+
+    shellString = '';
+    shellCommand = Turbine.ShellCommand();
+
+    dataSave = {};
+    dataSave['class_name'] = dropDown:GetText();
+
+    for key, value in pairs(statReferences) do
+        dataSave[key] = value:GetText();
+        shellString = shellString .. ';EVC' .. key .. '-' .. value:GetText() .. '';
+    end
+
+    shellString = shellString .. ';EVC' .. 'ClassName-' .. dropDown:GetText();
+
+    Turbine.Shell.AddCommand(shellString, shellCommand);
+    Turbine.Shell.WriteLine(shellString);
+
+    Turbine.PluginManager.LoadPlugin('EVCDataLoader');
+
+    for tempIndex = 1, #Turbine.PluginManager:GetLoadedPlugins() do
+        if (Turbine.PluginManager:GetLoadedPlugins()[tempIndex].Name == 'EVCDataLoader') then
+            Turbine.PluginManager.UnloadScriptState('EVCDataLoader');
+
+        end
+    end
+end
+
 
 function drawUserControls(parent)
     local saveButton = Turbine.UI.Lotro.Button();
@@ -111,39 +145,16 @@ function drawUserControls(parent)
     saveButton:SetParent(parent);
 
     saveButton.Click = function(sender, args)
-        shellString = '';
-        shellCommand = Turbine.ShellCommand();
-        --Turbine.PluginManager.UnloadScriptState("EVC");
-        Turbine.PluginManager.LoadPlugin('EVCDataLoader');
-        dataSave = {};
-        dataSave[class_id] = class_id;
-        Turbine.Shell.WriteLine('Clickity')
-        for key, value in pairs(statReferences) do
-            Turbine.Shell.WriteLine(value:GetText())
-            dataSave[key] = value:GetText();
-            shellString = shellString .. ';EVC"' .. key .. '"' .. value:GetText() .. '';
-        end
-        Turbine.Shell.AddCommand(shellString, shellCommand);
-        Turbine.Shell.WriteLine(shellString);
+        createCommands();
 
-        cmds = Turbine.Shell.GetCommands();
-        for key, value in pairs(cmds) do
-            if (string.find(value, "EVC")) then
-                Turbine.Shell.WriteLine(key .. value);
-
-            end
-        end
-
-        Turbine.PluginManager.UnloadScriptState('EVCDataLoader');
-
-        function eventHandler()
-            Turbine.Shell.WriteLine('Data Saved');
-
-            for key, value in pairs(dataSave) do
-                Turbine.Shell.WriteLine(key .. ": " .. value);
-            end
-
-        end
+        --function eventHandler()
+        --    Turbine.Shell.WriteLine('Data Saved');
+        --
+        --    for key, value in pairs(dataSave) do
+        --        Turbine.Shell.WriteLine(key .. ": " .. value);
+        --    end
+        --
+        --end
         --Plugins['EVC'].Unload()
         --Turbine.PluginData.Save(Turbine.DataScope.Character, "EVCTest", dataSave, eventHandler);
     end
@@ -152,7 +163,6 @@ end
 
 
 function UnloadPlugin()
-    Turbine.PluginData.Save(Turbine.DataScope.Character, "EVCTest", dataSave, eventHandler);
     Turbine.Shell.RemoveCommand(shellCommand);
     Turbine.Shell.WriteLine('Plugin Unloading...');
 
