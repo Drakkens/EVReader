@@ -54,7 +54,6 @@ Essence Value: {self.essence_value}
             else:
                 essence_value = calculate_morale_essence_value().get(CURRENT_CLASS)
 
-            print(stat_name)
             total_essence_slices += round(amount / essence_value * get_essence_weight(stat_name), 4)
 
         return round(total_essence_slices + self.essence_slots, 4)
