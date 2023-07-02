@@ -26,7 +26,8 @@ def setClickThrough(hwnd):
         win32gui.SetLayeredWindowAttributes(hwnd, 0, 255, win32con.LWA_COLORKEY)
 
     except Exception as e:
-        print(e)
+        print(f'TKinter: {e, sys.exc_info()[2].tb_lineno}')
+
 
 
 class EssenceValueDisplay:

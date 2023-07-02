@@ -1,13 +1,15 @@
 import string
 import sys
 
-from Classes.Utils.Utils import STAT_NAMES, StatType, EssenceTiers140, get_essence_weight, CURRENT_CLASS, CHOOSEN_ESSENCE_TIER
+from Classes.Utils.Utils import STAT_NAMES, StatType, EssenceTiers140
 from Classes.Utils.Utils import calculate_morale_essence_value
+from Classes.Utils.PluginDataParser import get_essence_weight, CURRENT_CLASS
 from Classes.Data.Essences import *
 from Classes.Data.Stats import *
 from Classes.Data.Classes import *
 
-
+#ToDo: Parser
+CHOOSEN_ESSENCE_TIER = 3
 def remove_unwanted_characters(text):
     return text.translate(str.maketrans("", "", "+-*,." + string.digits)).strip()
 

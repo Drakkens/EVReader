@@ -92,6 +92,6 @@ Stats: {self.stats}"""
 
                         stats[STAT] = round(stat_value / int(amount), 4)
         except Exception as e:
-            print(f"{index}: {str(e)}")
+            print(f'Main Stat Tooltip: {e, sys.exc_info()[2].tb_lineno}')
 
         return stats
