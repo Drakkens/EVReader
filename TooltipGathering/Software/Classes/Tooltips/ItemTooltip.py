@@ -2,11 +2,12 @@ import string
 import sys
 
 from Classes.Database.DatabaseHandler import DatabaseHandler, get_database, create_insert_query
-from Classes.Utils.Utils import STAT_NAMES, StatType, EssenceTiers140, get_essence_weight, CURRENT_CLASS
+from Classes.Utils.Utils import STAT_NAMES, StatType, EssenceTiers140
+from Classes.Utils.PluginDataParser import get_essence_weight, CURRENT_CLASS
 from Classes.Database.Utils import calculate_morale_essence_value
 
 database = get_database()
-
+print(CURRENT_CLASS)
 
 def remove_unwanted_characters(text):
     return text.translate(str.maketrans("", "", "+-*,." + string.digits)).strip()
@@ -184,7 +185,7 @@ Essence Value: {self.essence_value}
                     stat_name_id = DatabaseHandler.mappings.get(f'{stat_type.name}_STATS').get(stat)
 
                     # ToDo: Plugin Companion, Current Character Class (Or Class Selector)
-                    raw_stats = self.convert_main_stat_to_raw_stats('Beorning', stat_name_id, int(amount), raw_stats)
+                    raw_stats = self.convert_main_stat_to_raw_stats(CURRENT_CLASS, stat_name_id, int(amount), raw_stats)
 
                 else:
                     stat_type = StatType.RAW
