@@ -125,6 +125,7 @@ Essence Value: {self.essence_value}
 
                 if stat in MAIN_STATS and stat != 'Vitality':
                     # ToDo: Plugin Companion, Current Character Class (Or Class Selector)
+
                     raw_stats = self.convert_main_stat_to_raw_stats(CURRENT_CLASS, stat, int(amount), raw_stats)
 
                 else:

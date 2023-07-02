@@ -92,13 +92,10 @@ class EssenceValueDisplay:
             end = values[1][1]
             position = [start[0] + ((end[0] - start[0]) / 1.35), start[1] + 80]
             
-            print(item)
-            
             self.add_essence_value_display(values[0], position)
         self.needs_canvas_update = False
-        
+
     def check_for_update(self):
-        print(self.items, self.old_items)
         for item in self.items:
             if item not in self.old_items:
                 return True

@@ -21,7 +21,7 @@ def main(mode):
                 # If both are equal, don't update.
                 get_window_instance().old_items = get_window_instance().items.copy()
 
-                # Reset evd.items
+                # Reset get_window_instance().items
                 get_window_instance().items = {}
 
                 for tooltip in tooltips:
@@ -36,7 +36,6 @@ def main(mode):
                         print(f'Main Exception: {e, sys.exc_info()[2].tb_lineno}')
 
                 get_window_instance().needs_canvas_update = get_window_instance().check_for_update()
-                print(get_window_instance().needs_canvas_update)
 
     except KeyboardInterrupt:
         print("Exiting...")
