@@ -35,7 +35,6 @@ def main(mode):
                     except Exception as e:
                         print(e)
                 get_window_instance().needs_canvas_update = get_window_instance().check_for_update()
-                print(get_window_instance().needs_canvas_update)
 
     except KeyboardInterrupt:
         print("Exiting...")
