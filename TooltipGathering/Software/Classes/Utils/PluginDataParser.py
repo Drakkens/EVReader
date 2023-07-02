@@ -17,15 +17,23 @@ current_profile_file = open(last_modified_file)
 
 content = current_profile_file.read()
 
-regex_groups = r'(?P<stat_name>[a-zA-Z\s]*)"] = "(?P<stat_weight>\d+.*\d*)"'
+regex_groups = r'(?P<stat_name>[a-zA-Z\s]*)"] = "(?P<stat_weight>\d+.*\d*|[A-Za-z]*)"'
 pattern = re.compile(regex_groups)
 
-essence_weights = {}
+ESSENCE_WEIGHT = {}
 
 for match in pattern.finditer(content):
     stat_name = match.group(1)
-    stat_weight = match.group(2)
+    stat_value = match.group(2)
 
-    essence_weights[stat_name] = stat_weight
+    if stat_name == 'ClassName':
+        CURRENT_CLASS = stat_value.upper()
+    # elif stat_name == 'EssenceTier':
+    #     CHOOSEN_ESSENCE_TIER = stat_value
+    else:
+        ESSENCE_WEIGHT[stat_name] = float(stat_value)
 
-print(essence_weights)
+
+
+def get_essence_weight(stat):
+    return ESSENCE_WEIGHT.get(stat)
