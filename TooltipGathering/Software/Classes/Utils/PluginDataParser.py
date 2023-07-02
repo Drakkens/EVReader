@@ -33,7 +33,5 @@ for match in pattern.finditer(content):
     else:
         ESSENCE_WEIGHT[stat_name] = float(stat_value)
 
-
-
 def get_essence_weight(stat):
     return ESSENCE_WEIGHT.get(stat)
