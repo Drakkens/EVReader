@@ -204,7 +204,6 @@ def cover_unwanted_icons(image):
 
     if 255 in equipped_text_borders[5:10, 15:25]:
         image[25:65, 5:40] = 0
-        print('Equipped')
     else:
         image[5:45, 5:40] = 0
 
