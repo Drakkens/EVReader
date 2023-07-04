@@ -28,7 +28,7 @@ def read_plugin_data():
         stat_value = match.group(2)
 
         if stat_name == 'ClassName':
-            globals()["CURRENT_CLASS"] = stat_value.upper()
+            globals()["CURRENT_CLASS"] = stat_value.upper().replace("-","")
         # elif stat_name == 'EssenceTier':
         #     CHOOSEN_ESSENCE_TIER = stat_value
         else:
