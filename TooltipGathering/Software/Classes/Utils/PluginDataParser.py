@@ -4,6 +4,8 @@ import re
 LOTRO_DIR = os.path.expanduser(r"~\Documents\The Lord of the Rings Online\PluginData")
 ESSENCE_WEIGHT = {}
 CURRENT_CLASS = ''
+
+
 def read_plugin_data():
     possible_files = {}
 
@@ -28,7 +30,7 @@ def read_plugin_data():
         stat_value = match.group(2)
 
         if stat_name == 'ClassName':
-            globals()["CURRENT_CLASS"] = stat_value.upper().replace("-","")
+            globals()["CURRENT_CLASS"] = stat_value.upper().replace("-", "")
         # elif stat_name == 'EssenceTier':
         #     CHOOSEN_ESSENCE_TIER = stat_value
         else:

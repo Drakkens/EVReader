@@ -9,10 +9,10 @@ import pygetwindow
 import pytesseract
 from PIL import Image
 
-from Classes.Tooltips.ItemTooltip import ItemTooltip
-from Classes.Tooltips.MainStatTooltip import MainStatTooltip
-from Classes.Utils.Rectangle import Rectangle
-from Classes.Utils.Tkinter import get_window_instance
+from .Tooltips.ItemTooltip import ItemTooltip
+from .Tooltips.MainStatTooltip import MainStatTooltip
+from .Utils.Rectangle import Rectangle
+from .Utils.Tkinter import get_window_instance
 
 
 class Mode(Enum):

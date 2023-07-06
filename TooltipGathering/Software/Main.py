@@ -1,12 +1,29 @@
+import os
+import subprocess
 import sys
 from time import *
 
-from Classes import TooltipDetector
-from Classes.Utils.Tkinter import get_window_instance
-from Classes.Utils.Utils import calculate_morale_essence_value
+from Software.Classes import TooltipDetector
+from Software.Classes.Utils.Tkinter import get_window_instance
+from Software.Classes.Utils.Utils import check_version_updates
 
 
 def main(mode):
+    CURRENT_VERSION = "v0.1-ALPHA"
+    print('Getting Updates')
+    # url = check_version_updates(CURRENT_VERSION)
+    url = 'asd'
+    if url is not None:
+        print('Launching!')
+        current_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
+        print(f"{current_dir}\\Updater.py", url)
+        python = sys.executable
+        # sys.argv.append(url)
+        # os.execv(python, [python] + sys.argv)
+
+        subprocess.Popen(['start', '/B', sys.executable, f"{current_dir}\\Updater.py", url], shell=True, close_fds=True, stdin=None, stdout=None, stderr=None)
+        raise SystemExit
+
     try:
         while True:
             sleep(0.5)
@@ -37,7 +54,7 @@ def main(mode):
 
                 get_window_instance().needs_canvas_update = get_window_instance().check_for_update()
 
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, SystemExit):
         print("Exiting...")
         get_window_instance().isDisplayed = False
         sys.exit(130)

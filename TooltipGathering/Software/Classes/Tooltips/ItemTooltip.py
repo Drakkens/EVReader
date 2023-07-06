@@ -1,12 +1,12 @@
 import string
 import sys
 
-from Classes.Utils.Utils import STAT_NAMES, StatType, EssenceTiers140
-from Classes.Utils.Utils import calculate_morale_essence_value
-from Classes.Utils.PluginDataParser import get_essence_weight, CURRENT_CLASS
-from Classes.Data.Essences import *
-from Classes.Data.Stats import *
-from Classes.Data.Classes import *
+from ..Utils.Utils import STAT_NAMES, StatType, EssenceTiers140
+from ..Utils.Utils import calculate_morale_essence_value
+from ..Utils.PluginDataParser import get_essence_weight, CURRENT_CLASS
+from ..Data.Essences import *
+from ..Data.Stats import *
+from ..Data.Classes import *
 
 #ToDo: Parser
 CHOOSEN_ESSENCE_TIER = 3
@@ -133,6 +133,14 @@ Essence Value: {self.essence_value}
 
                     else:
                         raw_stats[stat] = int(amount)
+
+            # Tactical Mastery to OGH
+            if "Tactical Mastery Rating" in self.raw_stats:
+                if "Outgoing Healing Rating" in self.raw_stats:
+                    self.raw_stats["Outgoing Healing Rating"] += int(self.raw_stats["Tactical Mastery Rating"])
+                else:
+                    self.raw_stats["Outgoing Healing Rating"] = int(self.raw_stats["Tactical Mastery Rating"])
+
         except Exception as e:
             print(f'Item Exception: {e, sys.exc_info()[2].tb_lineno}')
 
