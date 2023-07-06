@@ -1,6 +1,5 @@
-import os
-import subprocess
-import sys
+import json
+import requests
 
 from ..Data.Classes import *
 from ..Data.Essences import *
@@ -104,10 +103,6 @@ def get_key_from_dictionary(dictionary, value):
 #ToDo: Parser
 CHOOSEN_ESSENCE_TIER = 3
 
-import json
-import requests
-
-INSTALL_DIR = r"~\AppData\Roaming\EVReader"
 
 def check_version_updates(current):
     print('Checking Versions')
@@ -122,8 +117,9 @@ def check_version_updates(current):
         print(latest_version, current)
 
         if latest_version != current:
-            download_url = release_info['assets'][0]['browser_download_url']
+            download_url_exe = release_info['assets'][0]['browser_download_url']
+            download_url_updater = release_info['assets'][1]['browser_download_url']
 
-            return download_url
-    return None
+            return download_url_exe, download_url_updater
+    return None, None
 

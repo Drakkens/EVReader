@@ -27,12 +27,10 @@ def download_and_apply_update(download_url):
             shutil.copy2(file_path, dest_path)
 
         shutil.rmtree(temp_dir)
-        exe_path = current_dir + 'LOTRO Essence Value Tooltips.exe'
         
         
         time.sleep(5)
         print("Opening App")
-        # subprocess.Popen(exe_path)
         subprocess.run([f"{current_dir}\\LOTRO Essence Value Tooltips.exe"], shell=True, close_fds=True, stdin=None, stdout=None, stderr=None)
 
         sys.exit('Update Success!')
@@ -40,7 +38,6 @@ def download_and_apply_update(download_url):
         sys.exit('Update Failed!')        
 
 
-url = "https://github.com/Drakkens/EVReader/releases/download/v0.2-ALPHA/EVT.zip"
+url = sys.argv[1]
 
-print(f'Launched! {url}')
 download_and_apply_update(url)

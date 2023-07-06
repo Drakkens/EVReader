@@ -1,7 +1,12 @@
+import io
 import os
+import shutil
 import subprocess
 import sys
+import tempfile
+import zipfile
 from time import *
+import requests
 
 from Software.Classes import TooltipDetector
 from Software.Classes.Utils.Tkinter import get_window_instance
@@ -9,19 +14,33 @@ from Software.Classes.Utils.Utils import check_version_updates
 
 
 def main(mode):
-    CURRENT_VERSION = "v0.1-ALPHA"
+    CURRENT_VERSION = "v0.3-ALPHA"
     print('Getting Updates')
-    # url = check_version_updates(CURRENT_VERSION)
-    url = 'asd'
-    if url is not None:
-        print('Launching!')
-        current_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
-        print(f"{current_dir}\\Updater.py", url)
-        python = sys.executable
-        # sys.argv.append(url)
-        # os.execv(python, [python] + sys.argv)
+    url_exe, url_updater = check_version_updates(CURRENT_VERSION)
 
-        subprocess.Popen(['start', '/B', sys.executable, f"{current_dir}\\Updater.py", url], shell=True, close_fds=True, stdin=None, stdout=None, stderr=None)
+    current_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
+    if not os.path.isfile(f"{current_dir}\\Updater.py"):
+        response = requests.get(url_updater, stream=True)
+        if response.status_code == 200:
+            temp_dir = tempfile.mkdtemp()
+
+            zip_data = response.content
+            zip_object = zipfile.ZipFile(io.BytesIO(zip_data))
+            zip_object.extractall(temp_dir)
+            zip_object.close()
+
+            current_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
+            for file_name in os.listdir(temp_dir):
+                file_path = os.path.join(temp_dir, file_name)
+                dest_path = os.path.join(current_dir, file_name)
+
+                shutil.copy2(file_path, dest_path)
+
+            shutil.rmtree(temp_dir)
+
+    if url_exe is not None:
+        print('Launching!')
+        subprocess.Popen(['start', '/B', sys.executable, f"{current_dir}\\Updater.py", url_exe], shell=True, close_fds=True, stdin=None, stdout=None, stderr=None)
         raise SystemExit
 
     try:
