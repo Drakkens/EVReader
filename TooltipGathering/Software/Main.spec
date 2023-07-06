@@ -8,7 +8,7 @@ a = Analysis(
     ['Main.py'],
     pathex=[],
     binaries=[],
-    datas=[("Essence_Green.png", "Software"), ("Essence_Green.ico", "Software")],
+    datas=[("Essence_Green.png", "Software"), ("Essence_Green.ico", "Software"), ("0.jpg", "Software")],
     hiddenimports=["Software.Classes", "Software.Classes.Data", "Software.Classes.Tooltips", "Software.Classes.Utils"],
     hookspath=[],
     hooksconfig={},

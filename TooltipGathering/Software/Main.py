@@ -11,6 +11,7 @@ import requests
 from Software.Classes import TooltipDetector
 from Software.Classes.Utils.Tkinter import get_window_instance
 from Software.Classes.Utils.Utils import check_version_updates
+from Software.Classes.Utils.PluginDataParser import read_plugin_data
 
 
 def main(mode):
@@ -44,8 +45,10 @@ def main(mode):
         raise SystemExit
 
     try:
+
         while True:
             sleep(0.5)
+            read_plugin_data()
 
             result = TooltipDetector.get_screen_contents()
             if result is not None:

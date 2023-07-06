@@ -3,7 +3,7 @@ import sys
 
 from ..Utils.Utils import STAT_NAMES, StatType, EssenceTiers140
 from ..Utils.Utils import calculate_morale_essence_value
-from ..Utils.PluginDataParser import get_essence_weight, CURRENT_CLASS
+from ..Utils.PluginDataParser import get_essence_weight, get_current_class
 from ..Data.Essences import *
 from ..Data.Stats import *
 from ..Data.Classes import *
@@ -52,7 +52,7 @@ Essence Value: {self.essence_value}
             if stat_name != 'Maximum Morale':
                 essence_value = EssenceTiers140['TIER' + str(CHOOSEN_ESSENCE_TIER)].value.get(stat_name)
             else:
-                essence_value = calculate_morale_essence_value().get(CURRENT_CLASS)
+                essence_value = calculate_morale_essence_value().get(get_current_class())
 
             total_essence_slices += round(amount / essence_value * get_essence_weight(stat_name), 4)
 
@@ -125,7 +125,7 @@ Essence Value: {self.essence_value}
                 if stat in MAIN_STATS and stat != 'Vitality':
                     # ToDo: Plugin Companion, Current Character Class (Or Class Selector)
 
-                    raw_stats = self.convert_main_stat_to_raw_stats(CURRENT_CLASS, stat, int(amount), raw_stats)
+                    raw_stats = self.convert_main_stat_to_raw_stats(get_current_class(), stat, int(amount), raw_stats)
 
                 else:
                     if stat in raw_stats.keys():
@@ -135,11 +135,11 @@ Essence Value: {self.essence_value}
                         raw_stats[stat] = int(amount)
 
             # Tactical Mastery to OGH
-            if "Tactical Mastery Rating" in self.raw_stats:
-                if "Outgoing Healing Rating" in self.raw_stats:
-                    self.raw_stats["Outgoing Healing Rating"] += int(self.raw_stats["Tactical Mastery Rating"])
+            if "Tactical Mastery Rating" in raw_stats:
+                if "Outgoing Healing Rating" in raw_stats:
+                    raw_stats["Outgoing Healing Rating"] += int(raw_stats["Tactical Mastery Rating"])
                 else:
-                    self.raw_stats["Outgoing Healing Rating"] = int(self.raw_stats["Tactical Mastery Rating"])
+                    raw_stats["Outgoing Healing Rating"] = int(raw_stats["Tactical Mastery Rating"])
 
         except Exception as e:
             print(f'Item Exception: {e, sys.exc_info()[2].tb_lineno}')
