@@ -21,6 +21,10 @@ def main(mode):
 
     current_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
     if not os.path.isfile(f"{current_dir}\\Updater.py"):
+
+        if url_updater is None:
+            url_updater = f'https://api.github.com/repos/Drakkens/EVReader/releases/latest'
+
         response = requests.get(url_updater, stream=True)
         if response.status_code == 200:
             temp_dir = tempfile.mkdtemp()
