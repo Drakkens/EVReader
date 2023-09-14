@@ -12,7 +12,8 @@ RAW_STATS = {'Critical Rating',
              'Evade Rating',
              'Outgoing Healing Rating',
              'Incoming Healing Rating',
-             'Resistance Rating'}
+             'Resistance Rating',
+             'Maximum Morale'}
 
 BEORNING_STATS = {
     "Armour": {"Physical Mitigation": 1,
@@ -32,9 +33,9 @@ BEORNING_STATS = {
              "Tactical Mitigation": 1,
              "Evade Rating": 1,
              "Resistance Rating": 1, },
-    "Fate": {"Critical Rating": 2.5,
-             "Tactical Mitigation": 2,
-             "Resistance Rating": 1,
+    "Fate": {"Critical Rating": 1.5,
+             "Tactical Mitigation": 1,
+             "Resistance Rating": 0.5,
              "Finesse Rating": 0.5, },
 }
 
@@ -52,10 +53,10 @@ BURGLAR_STATS = {
     "Will": {"Tactical Mastery Rating": 1,
              "Tactical Mitigation": 1,
              "Resistance Rating": 2, },
-    "Fate": {"Critical Rating": 2.5,
-             "Tactical Mitigation": 1,
-             "Resistance Rating": 1,
-             "Finesse Rating": 1, }
+    "Fate": {"Critical Rating": 1.5,
+             "Tactical Mitigation": 0.5,
+             "Resistance Rating": 0.5,
+             "Finesse Rating": 0.5, }
 }
 
 BRAWLER_STATS = {
@@ -67,15 +68,15 @@ BRAWLER_STATS = {
               "Finesse Rating": 1, },
     "Agility": {"Parry Rating": 2,
                 "Evade Rating": 3, },
-    "Vitality": {"Resistance Rating": 1,
+    "Vitality": {"Resistance Rating": 0.5,
                  "Maximum Morale": 5, },
     "Will": {"Tactical Mastery Rating": 1,
              "Tactical Mitigation": 2,
              "Resistance Rating": 1, },
-    "Fate": {"Critical Rating": 2.5,
-             "Tactical Mitigation": 1,
-             "Resistance Rating": 1,
-             "Finesse Rating": 1, }
+    "Fate": {"Critical Rating": 1.5,
+             "Tactical Mitigation": 0.5,
+             "Resistance Rating": 0.5,
+             "Finesse Rating": 0.5, }
 }
 
 CAPTAIN_STATS = {
@@ -88,13 +89,13 @@ CAPTAIN_STATS = {
     "Agility": {"Critical Rating": 1,
                 "Parry Rating": 2,
                 "Evade Rating": 3, },
-    "Vitality": {"Resistance Rating": 2,
+    "Vitality": {"Resistance Rating": 1,
                  "Maximum Morale": 4.5, },
     "Will": {"Tactical Mitigation": 1,
              "Resistance Rating": 2, },
-    "Fate": {"Critical Rating": 2.5,
-             "Tactical Mitigation": 1,
-             "Finesse Rating": 1, }
+    "Fate": {"Critical Rating": 1.5,
+             "Tactical Mitigation": 0.5,
+             "Finesse Rating": 0.5, }
 }
 
 CHAMPION_STATS = {
@@ -109,15 +110,15 @@ CHAMPION_STATS = {
                 "Parry Rating": 2,
                 "Evade Rating": 3, },
     "Vitality": {"Block Rating": 1,
-                 "Resistance Rating": 1,
+                 "Resistance Rating": 0.5,
                  "Maximum Morale": 4.5, },
     "Will": {"Tactical Mastery Rating": 1,
              "Tactical Mitigation": 1,
              "Resistance Rating": 2, },
-    "Fate": {"Critical Rating": 2.5,
-             "Tactical Mitigation": 1,
-             "Resistance Rating": 1,
-             "Finesse Rating": 1, }
+    "Fate": {"Critical Rating": 1.5,
+             "Tactical Mitigation": 0.5,
+             "Resistance Rating": 0.5,
+             "Finesse Rating": 0.5, }
 }
 
 GUARDIAN_STATS = {
@@ -129,15 +130,15 @@ GUARDIAN_STATS = {
     "Agility": {"Critical Rating": 1,
                 "Parry Rating": 2,
                 "Evade Rating": 3, },
-    "Vitality": {"Resistance Rating": 1,
+    "Vitality": {"Resistance Rating": 0.5,
                  "Maximum Morale": 4.8, },
     "Will": {"Tactical Mastery Rating": 1,
              "Tactical Mitigation": 1,
              "Resistance Rating": 2, },
-    "Fate": {"Critical Rating": 2.5,
-             "Tactical Mitigation": 1,
-             "Resistance Rating": 1,
-             "Finesse Rating": 1, }
+    "Fate": {"Critical Rating": 1.5,
+             "Tactical Mitigation": 0.5,
+             "Resistance Rating": 0.5,
+             "Finesse Rating": 0.5, }
 }
 
 HUNTER_STATS = {
@@ -149,16 +150,16 @@ HUNTER_STATS = {
                 "Critical Rating": 1,
                 "Parry Rating": 2,
                 "Evade Rating": 3, },
-    "Vitality": {"Tactical Mitigation": 1,
-                 "Resistance Rating": 1,
+    "Vitality": {"Tactical Mitigation": 0.5,
+                 "Resistance Rating": 0.5,
                  "Maximum Morale": 4, },
     "Will": {"Tactical Mastery Rating": 1,
              "Tactical Mitigation": 1,
              "Resistance Rating": 2, },
-    "Fate": {"Critical Rating": 2.5,
-             "Tactical Mitigation": 1,
-             "Resistance Rating": 1,
-             "Finesse Rating": 1, }
+    "Fate": {"Critical Rating": 1.5,
+             "Tactical Mitigation": 0.5,
+             "Resistance Rating": 0.5,
+             "Finesse Rating": 0.5, }
 }
 
 LOREMASTER_STATS = {
@@ -169,17 +170,17 @@ LOREMASTER_STATS = {
     "Agility": {"Critical Rating": 1,
                 "Parry Rating": 2,
                 "Evade Rating": 3, },
-    "Vitality": {"Tactical Mitigation": 1,
-                 "Resistance Rating": 1,
+    "Vitality": {"Tactical Mitigation": 0.5,
+                 "Resistance Rating": 0.5,
                  "Maximum Morale": 4, },
     "Will": {"Tactical Mastery Rating": 3,
              "Tactical Mitigation": 1,
              "Evade Rating": 1,
              "Resistance Rating": 2,
              "Finesse Rating": 1, },
-    "Fate": {"Critical Rating": 2.5,
-             "Tactical Mitigation": 1,
-             "Resistance Rating": 1, }
+    "Fate": {"Critical Rating": 1.5,
+             "Tactical Mitigation": 0.5,
+             "Resistance Rating": 0.5, }
 }
 
 MINSTREL_STATS = {
@@ -190,17 +191,17 @@ MINSTREL_STATS = {
     "Agility": {"Critical Rating": 1,
                 "Parry Rating": 2,
                 "Evade Rating": 3, },
-    "Vitality": {"Tactical Mitigation": 1,
-                 "Resistance Rating": 1,
+    "Vitality": {"Tactical Mitigation": 0.5,
+                 "Resistance Rating": 0.5,
                  "Maximum Morale": 4, },
     "Will": {"Tactical Mastery Rating": 3,
              "Tactical Mitigation": 1,
              "Evade Rating": 1,
              "Resistance Rating": 2,
              "Finesse Rating": 1, },
-    "Fate": {"Critical Rating": 2.5,
-             "Tactical Mitigation": 1,
-             "Resistance Rating": 1, }
+    "Fate": {"Critical Rating": 1.5,
+             "Tactical Mitigation": 0.5,
+             "Resistance Rating": 0.5, }
 }
 
 RUNEKEEPER_STATS = {
@@ -211,17 +212,17 @@ RUNEKEEPER_STATS = {
     "Agility": {"Critical Rating": 1,
                 "Parry Rating": 2,
                 "Evade Rating": 3, },
-    "Vitality": {"Tactical Mitigation": 1,
-                 "Resistance Rating": 1,
+    "Vitality": {"Tactical Mitigation": 0.5,
+                 "Resistance Rating": 0.5,
                  "Maximum Morale": 4, },
     "Will": {"Tactical Mastery Rating": 3,
              "Tactical Mitigation": 1,
              "Evade Rating": 1,
              "Resistance Rating": 2,
              "Finesse Rating": 1, },
-    "Fate": {"Critical Rating": 2.5,
-             "Tactical Mitigation": 1,
-             "Resistance Rating": 1, }
+    "Fate": {"Critical Rating": 1.5,
+             "Tactical Mitigation": 0.5,
+             "Resistance Rating": 0.5, }
 }
 
 WARDEN_STATS = {
@@ -234,12 +235,12 @@ WARDEN_STATS = {
                 "Critical Rating": 1,
                 "Parry Rating": 2,
                 "Evade Rating": 3, },
-    "Vitality": {"Resistance Rating": 1,
+    "Vitality": {"Resistance Rating": 0.5,
                  "Maximum Morale": 4.8, },
     "Will": {"Tactical Mitigation": 1,
              "Resistance Rating": 2, },
-    "Fate": {"Critical Rating": 2.5,
-             "Tactical Mitigation": 1,
-             "Resistance Rating": 1,
-             "Finesse Rating": 1, }
+    "Fate": {"Critical Rating": 1.5,
+             "Tactical Mitigation": 0.5,
+             "Resistance Rating": 0.5,
+             "Finesse Rating": 0.5, }
 }

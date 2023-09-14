@@ -8,8 +8,10 @@ from Classes.Data.Essences import *
 from Classes.Data.Stats import *
 from Classes.Data.Classes import *
 
-#ToDo: Parser
+# ToDo: Parser
 CHOOSEN_ESSENCE_TIER = 3
+
+
 def remove_unwanted_characters(text):
     return text.translate(str.maketrans("", "", "+-*,." + string.digits)).strip()
 
@@ -114,7 +116,8 @@ Essence Value: {self.essence_value}
 
                 else:
                     # ToDo: Same issue as described in get_essence_slots
-                    if "ESSENCE" in self.text[index] or "EMPTY SLOT" in self.text[index] or "Durability" in self.text[index]:
+                    if "ESSENCE" in self.text[index] or "EMPTY SLOT" in self.text[index] or "Durability" in self.text[
+                        index]:
                         break
                     continue
 
@@ -122,7 +125,7 @@ Essence Value: {self.essence_value}
                 stats[stat] = int(amount)
                 # Vit Treated as Raw Stat
 
-                if stat in MAIN_STATS and stat != 'Vitality':
+                if stat in MAIN_STATS:
                     # ToDo: Plugin Companion, Current Character Class (Or Class Selector)
 
                     raw_stats = self.convert_main_stat_to_raw_stats(CURRENT_CLASS, stat, int(amount), raw_stats)
