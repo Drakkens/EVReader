@@ -2,8 +2,7 @@ import os
 import re
 
 LOTRO_DIR = os.path.expanduser(r"~\Documents\The Lord of the Rings Online\PluginData")
-ESSENCE_WEIGHT = {}
-CURRENT_CLASS = ''
+
 def read_plugin_data():
     possible_files = {}
 
@@ -20,7 +19,7 @@ def read_plugin_data():
 
     content = current_profile_file.read()
 
-    regex_groups = r'(?P<stat_name>[a-zA-Z\s]*)"] = "(?P<stat_weight>\d+.*\d*|[A-Za-z]*)"'
+    regex_groups = r'(?P<stat_name>[a-zA-Z\s]*)"] = "(?P<stat_weight>\d+.*\d*|[A-Za-z-]*)"'
     pattern = re.compile(regex_groups)
 
     for match in pattern.finditer(content):
@@ -28,16 +27,22 @@ def read_plugin_data():
         stat_value = match.group(2)
 
         if stat_name == 'ClassName':
-            globals()["CURRENT_CLASS"] = stat_value.upper()
+            current_class = stat_value.upper().replace("-", "")
+            PluginData.current_class = current_class
         # elif stat_name == 'EssenceTier':
         #     CHOOSEN_ESSENCE_TIER = stat_value
         else:
-            ESSENCE_WEIGHT[stat_name] = float(stat_value)
+            PluginData.essence_weight[stat_name] = float(stat_value)
 
 
 def get_essence_weight(stat):
-    read_plugin_data()
-    return ESSENCE_WEIGHT.get(stat)
+    return PluginData.essence_weight.get(stat)
 
 
-read_plugin_data()
+def get_current_class():
+    return PluginData.current_class
+
+
+class PluginData:
+    current_class = None
+    essence_weight = {}

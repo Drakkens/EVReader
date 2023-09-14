@@ -1,17 +1,15 @@
 import string
 import sys
 
-from Classes.Utils.Utils import STAT_NAMES, StatType, EssenceTiers140
-from Classes.Utils.Utils import calculate_morale_essence_value
-from Classes.Utils.PluginDataParser import get_essence_weight, CURRENT_CLASS
-from Classes.Data.Essences import *
-from Classes.Data.Stats import *
-from Classes.Data.Classes import *
+from ..Utils.Utils import STAT_NAMES, StatType, EssenceTiers140
+from ..Utils.Utils import calculate_morale_essence_value
+from ..Utils.PluginDataParser import get_essence_weight, get_current_class
+from ..Data.Essences import *
+from ..Data.Stats import *
+from ..Data.Classes import *
 
-# ToDo: Parser
+#ToDo: Parser
 CHOOSEN_ESSENCE_TIER = 3
-
-
 def remove_unwanted_characters(text):
     return text.translate(str.maketrans("", "", "+-*,." + string.digits)).strip()
 
@@ -54,7 +52,11 @@ Essence Value: {self.essence_value}
             if stat_name != 'Maximum Morale':
                 essence_value = EssenceTiers140['TIER' + str(CHOOSEN_ESSENCE_TIER)].value.get(stat_name)
             else:
+<<<<<<< HEAD
                 essence_value = calculate_morale_essence_value().get(CURRENT_CLASS)
+=======
+                essence_value = calculate_morale_essence_value().get(get_current_class())
+>>>>>>> 5838c4eb3c50c1ef697c5ecec8b5f1839f4fd1fd
 
             total_essence_slices += round(amount / essence_value * get_essence_weight(stat_name), 4)
 
@@ -116,8 +118,12 @@ Essence Value: {self.essence_value}
 
                 else:
                     # ToDo: Same issue as described in get_essence_slots
+<<<<<<< HEAD
                     if "ESSENCE" in self.text[index] or "EMPTY SLOT" in self.text[index] or "Durability" in self.text[
                         index]:
+=======
+                    if "ESSENCE" in self.text[index] or "EMPTY SLOT" in self.text[index] or "Durability" in self.text[index]:
+>>>>>>> 5838c4eb3c50c1ef697c5ecec8b5f1839f4fd1fd
                         break
                     continue
 
@@ -125,10 +131,17 @@ Essence Value: {self.essence_value}
                 stats[stat] = int(amount)
                 # Vit Treated as Raw Stat
 
+<<<<<<< HEAD
                 if stat in MAIN_STATS:
                     # ToDo: Plugin Companion, Current Character Class (Or Class Selector)
 
                     raw_stats = self.convert_main_stat_to_raw_stats(CURRENT_CLASS, stat, int(amount), raw_stats)
+=======
+                if stat in MAIN_STATS and stat != 'Vitality':
+                    # ToDo: Plugin Companion, Current Character Class (Or Class Selector)
+
+                    raw_stats = self.convert_main_stat_to_raw_stats(get_current_class(), stat, int(amount), raw_stats)
+>>>>>>> 5838c4eb3c50c1ef697c5ecec8b5f1839f4fd1fd
 
                 else:
                     if stat in raw_stats.keys():
@@ -136,6 +149,17 @@ Essence Value: {self.essence_value}
 
                     else:
                         raw_stats[stat] = int(amount)
+<<<<<<< HEAD
+=======
+
+            # Tactical Mastery to OGH
+            if "Tactical Mastery Rating" in raw_stats:
+                if "Outgoing Healing Rating" in raw_stats:
+                    raw_stats["Outgoing Healing Rating"] += int(raw_stats["Tactical Mastery Rating"])
+                else:
+                    raw_stats["Outgoing Healing Rating"] = int(raw_stats["Tactical Mastery Rating"])
+
+>>>>>>> 5838c4eb3c50c1ef697c5ecec8b5f1839f4fd1fd
         except Exception as e:
             print(f'Item Exception: {e, sys.exc_info()[2].tb_lineno}')
 

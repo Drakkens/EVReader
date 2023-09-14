@@ -1,7 +1,7 @@
 import os
 
-from Classes.Utils.Utils import STAT_NAMES, has_number
-from Classes.Tooltips.TooltipInterface import TooltipInterface
+from ..Utils.Utils import STAT_NAMES, has_number
+from ..Tooltips.TooltipInterface import TooltipInterface
 
 TOOLTIP_DIR = r"C:/Users/joanf/Documents/Fleet/LOTRO-Repo/TooltipGathering/Software/Tooltips/"
 

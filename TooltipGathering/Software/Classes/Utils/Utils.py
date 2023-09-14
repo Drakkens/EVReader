@@ -1,7 +1,8 @@
-from enum import Enum
-from Classes.Data.Essences import *
-from Classes.Data.Stats import *
-from Classes.Data.Classes import *
+import json
+import requests
+
+from ..Data.Classes import *
+from ..Data.Essences import *
 
 
 #ToDo: Move to Essences
@@ -98,6 +99,27 @@ def get_key_from_dictionary(dictionary, value):
 #                    "Physical Mastery Rating": 0,
 #                    "Block Rating": 0}
 
+
 #ToDo: Parser
 CHOOSEN_ESSENCE_TIER = 3
+
+
+def check_version_updates(current):
+    print('Checking Versions')
+
+    url = f'https://api.github.com/repos/Drakkens/EVReader/releases/latest'
+    response = requests.get(url)
+    print(response)
+
+    if response.status_code == 200:
+        release_info = json.loads(response.text)
+        latest_version = release_info['tag_name']
+        print(latest_version, current)
+
+        if latest_version != current:
+            download_url_exe = release_info['assets'][0]['browser_download_url']
+            download_url_updater = release_info['assets'][1]['browser_download_url']
+
+            return download_url_exe, download_url_updater
+    return None, None
 

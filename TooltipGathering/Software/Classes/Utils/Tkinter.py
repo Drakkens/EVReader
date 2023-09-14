@@ -1,3 +1,4 @@
+import os
 import sys
 import threading
 
@@ -11,7 +12,10 @@ import win32api
 from PIL import ImageTk, Image
 from time import sleep
 
-IMAGE = Image.open('Essence_Green.png')
+
+FILE_PATH = os.path.join(sys._MEIPASS, 'Software', 'Essence_Green.png')
+
+IMAGE = Image.open(FILE_PATH)
 TARGET_WINDOW_TITLE = 'The Lord of the Rings Online™'
 
 
@@ -50,7 +54,10 @@ class EssenceValueDisplay:
         dimensions = [win32api.GetSystemMetrics(0), win32api.GetSystemMetrics(1)]
 
         self.root = Tk()
-        icon = ImageTk.PhotoImage(file='Essence_Green.png')
+
+        file_path = os.path.join(sys._MEIPASS, 'Software', 'Essence_Green.png')
+
+        icon = ImageTk.PhotoImage(file=FILE_PATH)
         self.root.icon = icon
         self.root.geometry(f'{dimensions[0]}x{dimensions[1]}')
         self.root.attributes('-transparentcolor', 'black', '-topmost', 1)

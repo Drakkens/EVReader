@@ -1,3 +1,4 @@
+import os
 import sys
 from enum import Enum
 from time import sleep
@@ -9,10 +10,10 @@ import pygetwindow
 import pytesseract
 from PIL import Image
 
-from Classes.Tooltips.ItemTooltip import ItemTooltip
-from Classes.Tooltips.MainStatTooltip import MainStatTooltip
-from Classes.Utils.Rectangle import Rectangle
-from Classes.Utils.Tkinter import get_window_instance
+from .Tooltips.ItemTooltip import ItemTooltip
+from .Tooltips.MainStatTooltip import MainStatTooltip
+from .Utils.Rectangle import Rectangle
+from .Utils.Tkinter import get_window_instance
 
 
 class Mode(Enum):
@@ -224,7 +225,7 @@ def process_stat_tooltip(screenshot, tooltip, mode):
     human_image = get_tooltip_image(screenshot, tooltip, False, mode)
     ocr_image = get_tooltip_image(screenshot, tooltip, True, mode)
 
-    TEMPLATE = r'C:\Users\joanf\Documents\Fleet\LOTRO-Repo\TooltipGathering\Software\Templates\0.jpg'
+    TEMPLATE = os.path.join(sys._MEIPASS, 'Software', '0.jpg')
     locations = find_template_locations(ocr_image, TEMPLATE)
     delete_zeros(ocr_image, locations, TEMPLATE)
     reinsert_zeros_and_translate_content(ocr_image, locations, TEMPLATE)
@@ -264,5 +265,6 @@ def process_item_tooltip(screenshot, tooltip, mode, position=None):
 
     # human_image.save(f"./Tooltips/Items/{item.name}.jpg")
     Image.fromarray(ocr_image).save(f"./Tooltips/Items/{item.name}_ocr.jpg")
+    # Image.fromarray(ocr_image).save(f"./Tooltips/Items/{item.name}_ocr.jpg")
 
     print(item)

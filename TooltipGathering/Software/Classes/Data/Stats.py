@@ -15,6 +15,7 @@ RAW_STATS = {'Critical Rating',
              'Resistance Rating',
              'Maximum Morale'}
 
+
 BEORNING_STATS = {
     "Armour": {"Physical Mitigation": 1,
                "Tactical Mitigation": 0.2},
